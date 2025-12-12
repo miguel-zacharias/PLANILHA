@@ -14,138 +14,114 @@
     <style>
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
         }
         
         .gradient-bg {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%);
             min-height: 100vh;
+            width: 100%;
         }
-        /* Cor padrão do texto (permite que classes de utilitário sobrescrevam cores específicas) */
+        
         body {
             color: #000000;
-            margin: 0;
-            padding: 0;
         }
+        
         .glass {
             background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
         }
+        
         .pulse-shadow {
             animation: pulseShadow 2s infinite;
         }
+        
         @keyframes pulseShadow {
             0%, 100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.1); }
             70% { box-shadow: 0 0 0 10px rgba(0, 0, 0, 0); }
         }
+        
         .floating {
             animation: floating 3s ease-in-out infinite;
         }
+        
         @keyframes floating {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
         }
+        
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
         }
+        
         .progress-ring {
             transform: rotate(-90deg);
         }
+        
         .progress-ring-circle {
             stroke-dasharray: 283;
             stroke-dashoffset: 283;
             transition: stroke-dashoffset 0.5s ease-in-out;
         }
+        
         .sparkline {
             fill: none;
             stroke-width: 2;
             vector-effect: non-scaling-stroke;
         }
+        
         .card-hover {
             transition: all 0.3s ease;
         }
+        
         .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
         
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
         /* Responsividade Mobile */
-        @media (max-width: 768px) {
+        @media (min-width: 640px) {
             .container {
-                padding: 1rem !important;
-            }
-            
-            h1 {
-                font-size: 2rem !important;
-                line-height: 1.2 !important;
-            }
-            
-            h2 {
-                font-size: 1.5rem !important;
-            }
-            
-            h3 {
-                font-size: 1rem !important;
-            }
-            
-            p {
-                font-size: 0.875rem !important;
+                padding: 1.5rem;
             }
         }
         
-        @media (max-width: 640px) {
+        @media (min-width: 768px) {
             .container {
-                padding: 1rem !important;
+                padding: 2rem;
+                max-width: 1280px;
             }
-            
+        }
+        
+        @media (min-width: 1024px) {
+            .container {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
             h1 {
                 font-size: 1.75rem !important;
-                margin-bottom: 1rem !important;
-            }
-            
-            h2 {
-                font-size: 1.5rem !important;
-            }
-            
-            .chart-container {
-                height: 250px !important;
-            }
-            
-            .glass {
-                padding: 1rem !important;
-            }
-            
-            button {
-                font-size: 0.875rem !important;
-                padding: 0.75rem 1rem !important;
-            }
-            
-            input[type="text"],
-            input[type="number"],
-            input[type="date"],
-            select {
-                padding: 0.875rem !important;
-                font-size: 1rem !important;
-                border-radius: 0.75rem !important;
-            }
-            
-            i[data-lucide] {
-                width: 1.25rem !important;
-                height: 1.25rem !important;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .container {
-                padding: 1rem !important;
-            }
-            
-            h1 {
-                font-size: 1.5rem !important;
-                margin-bottom: 1rem !important;
                 line-height: 1.3 !important;
             }
             
@@ -157,6 +133,25 @@
                 font-size: 1rem !important;
             }
             
+            .chart-container {
+                height: 250px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem !important;
+                line-height: 1.3 !important;
+            }
+            
+            h2 {
+                font-size: 1.125rem !important;
+            }
+            
+            h3 {
+                font-size: 0.95rem !important;
+            }
+            
             p, span, label {
                 font-size: 0.875rem !important;
             }
@@ -165,14 +160,7 @@
                 height: 220px !important;
             }
             
-            .glass {
-                padding: 1rem !important;
-                border-radius: 0.75rem !important;
-            }
-            
             button {
-                padding: 0.75rem 1rem !important;
-                font-size: 0.875rem !important;
                 min-height: 44px !important;
             }
             
@@ -180,58 +168,36 @@
             input[type="number"],
             input[type="date"],
             select {
-                padding: 0.75rem !important;
-                font-size: 1rem !important;
-                border-radius: 0.75rem !important;
                 min-height: 44px !important;
-            }
-            
-            i[data-lucide] {
-                width: 1.25rem !important;
-                height: 1.25rem !important;
-            }
-            
-            .grid {
-                gap: 0.75rem !important;
-            }
-            
-            .gap-2 {
-                gap: 0.5rem !important;
-            }
-            
-            .gap-3 {
-                gap: 0.75rem !important;
-            }
-            
-            .gap-4 {
-                gap: 1rem !important;
+                font-size: 16px !important; /* Previne zoom no iOS */
             }
         }
     </style>
 </head>
-<body class="gradient-bg min-h-screen">
-    <div class="container mx-auto p-4 sm:p-6 md:p-8 relative" style="max-width: 100%;">
-        <!-- Controles neutros (canto superior) - Responsivo -->
+<body class="gradient-bg">
+    <div class="container">
+        <!-- Controles neutros -->
         <div class="flex flex-row gap-2 sm:gap-3 z-50 mb-4 sm:mb-6 justify-center sm:justify-end flex-wrap">
-            <button onclick="renameUsername()" class="px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">Renomear</button>
-            <button onclick="deleteAllData()" class="px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">Excluir dados</button>
+            <button onclick="renameUsername()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">Renomear</button>
+            <button onclick="deleteAllData()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">Excluir dados</button>
         </div>
+        
         <!-- Header -->
         <div class="text-center mb-6 sm:mb-8" data-aos="fade-down">
-            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-3 floating" style="line-height: 1.2;">Bem-Vindo ao seu Dashboard Financeiro.</h1>
-            <p class="text-gray-600 text-sm sm:text-base md:text-lg px-2">Bem-Vindo ao seu Dashboard Financeiro com análise completa de suas finanças</p>
-            <div class="mt-2 sm:mt-4 flex justify-center px-2">
-                <div class="pulse-shadow bg-gray-200 bg-opacity-50 rounded-full px-3 sm:px-4 py-1 sm:py-2">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-3 floating">Bem-Vindo ao seu Dashboard Financeiro.</h1>
+            <p class="text-gray-600 text-sm sm:text-base md:text-lg">Análise completa de suas finanças</p>
+            <div class="mt-4 flex justify-center">
+                <div class="pulse-shadow bg-gray-200 bg-opacity-50 rounded-full px-4 py-2">
                     <span class="text-gray-700 text-xs font-medium" id="ultimo-update">Última atualização: agora</span>
                 </div>
             </div>
         </div>
-
+        
         <!-- Métricas Rápidas -->
-        <div class="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 md:grid-cols-4 mb-6 sm:mb-8">
-            <div class="glass rounded-lg sm:rounded-2xl p-3 sm:p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="100">
-                <div class="text-xl sm:text-2xl font-bold text-gray-800" id="meta-economia">20%</div>
-                <div class="text-gray-600 text-xs sm:text-sm">Meta Economia</div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <div class="glass rounded-xl sm:rounded-2xl p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="100">
+                <div class="text-2xl font-bold text-gray-800" id="meta-economia">20%</div>
+                <div class="text-gray-600 text-sm">Meta Economia</div>
                 <div class="mt-2">
                     <svg class="progress-ring w-12 h-12 mx-auto">
                         <circle class="progress-ring-circle" stroke="rgba(255,255,255,0.3)" stroke-width="3" fill="transparent" r="18" cx="24" cy="24"/>
@@ -239,39 +205,42 @@
                     </svg>
                 </div>
             </div>
-            <div class="glass rounded-lg sm:rounded-2xl p-3 sm:p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="200">
-                <div class="text-xl sm:text-2xl font-bold text-gray-800" id="dias-consecutivos">0</div>
-                <div class="text-gray-600 text-xs sm:text-sm">Dias sem gastos</div>
-                <div class="text-2xl sm:text-3xl mt-1">🔥</div>
+            
+            <div class="glass rounded-xl sm:rounded-2xl p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="200">
+                <div class="text-2xl font-bold text-gray-800" id="dias-consecutivos">0</div>
+                <div class="text-gray-600 text-sm">Dias sem gastos</div>
+                <div class="text-3xl mt-1">🔥</div>
             </div>
-            <div class="glass rounded-lg sm:rounded-2xl p-3 sm:p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="300">
-                <div class="text-xl sm:text-2xl font-bold text-gray-800" id="media-diaria">R$ 0</div>
-                <div class="text-gray-600 text-xs sm:text-sm">Média Diária</div>
-                <div class="text-2xl sm:text-3xl mt-1">📊</div>
+            
+            <div class="glass rounded-xl sm:rounded-2xl p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="300">
+                <div class="text-2xl font-bold text-gray-800" id="media-diaria">R$ 0</div>
+                <div class="text-gray-600 text-sm">Média Diária</div>
+                <div class="text-3xl mt-1">📊</div>
             </div>
-            <div class="glass rounded-lg sm:rounded-2xl p-3 sm:p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="400">
-                <div class="text-xl sm:text-2xl font-bold text-gray-800" id="projecao-mes">R$ 0</div>
-                <div class="text-gray-600 text-xs sm:text-sm">Projeção Mês</div>
-                <div class="text-2xl sm:text-3xl mt-1">🎯</div>
+            
+            <div class="glass rounded-xl sm:rounded-2xl p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="400">
+                <div class="text-2xl font-bold text-gray-800" id="projecao-mes">R$ 0</div>
+                <div class="text-gray-600 text-sm">Projeção Mês</div>
+                <div class="text-3xl mt-1">🎯</div>
             </div>
         </div>
-
+        
         <!-- Cards Principais -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 sm:mb-8">
             <!-- Saldo Total -->
-            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="100">
-            <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-                    <div class="p-2 sm:p-3 bg-blue-500 bg-opacity-20 rounded-xl sm:rounded-2xl pulse-shadow">
-                        <i data-lucide="wallet" class="w-4 sm:w-6 h-4 sm:h-6 text-blue-600"></i>
+            <div class="glass rounded-2xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="100">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="p-3 bg-blue-500 bg-opacity-20 rounded-2xl pulse-shadow">
+                        <i data-lucide="wallet" class="w-6 h-6 text-blue-600"></i>
                     </div>
-                    <div class="text-right overflow-hidden">
-                        <svg class="w-12 sm:w-16 h-6 sm:h-8 sparkline" viewBox="0 0 100 30">
+                    <div class="overflow-hidden">
+                        <svg class="w-16 h-8 sparkline" viewBox="0 0 100 30">
                             <polyline class="sparkline" stroke="#60a5fa" points="0,20 20,15 40,25 60,10 80,18 100,12" id="sparkline-saldo"/>
                         </svg>
                     </div>
                 </div>
-                <p class="text-gray-600 text-xs sm:text-sm mb-1">Saldo Total</p>
-                <p class="text-2xl sm:text-3xl font-bold text-gray-800" id="saldo-total">R$ 0,00</p>
+                <p class="text-gray-600 text-sm mb-1">Saldo Total</p>
+                <p class="text-3xl font-bold text-gray-800 break-words" id="saldo-total">R$ 0,00</p>
                 <div class="mt-3 pt-3 border-t border-gray-300">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1">
                         <span class="text-gray-500 text-xs" id="taxa-economia">Taxa de economia: 0%</span>
@@ -279,19 +248,19 @@
                     </div>
                 </div>
             </div>
-
+            
             <!-- Receitas -->
-            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="200">
-                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-                    <div class="p-2 sm:p-3 bg-green-500 bg-opacity-20 rounded-xl sm:rounded-2xl pulse-shadow">
-                        <i data-lucide="trending-up" class="w-4 sm:w-6 h-4 sm:h-6 text-green-600"></i>
+            <div class="glass rounded-2xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="200">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="p-3 bg-green-500 bg-opacity-20 rounded-2xl pulse-shadow">
+                        <i data-lucide="trending-up" class="w-6 h-6 text-green-600"></i>
                     </div>
-                    <span class="text-green-700 text-xs font-semibold bg-green-200 px-2 sm:px-3 py-1 rounded-full text-ellipsis overflow-hidden" id="contador-receitas">+0</span>
+                    <span class="text-green-700 text-xs font-semibold bg-green-200 px-3 py-1 rounded-full" id="contador-receitas">+0</span>
                 </div>
-                <p class="text-gray-600 text-xs sm:text-sm mb-1">Receitas</p>
-                <p class="text-2xl sm:text-3xl font-bold text-green-600" id="total-receitas">R$ 0,00</p>
+                <p class="text-gray-600 text-sm mb-1">Receitas</p>
+                <p class="text-3xl font-bold text-green-600 break-words" id="total-receitas">R$ 0,00</p>
                 <div class="mt-3 pt-3 border-t border-gray-300">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1">
+                    <div class="flex items-center justify-between">
                         <span class="text-gray-500 text-xs">Este mês</span>
                         <div class="flex items-center">
                             <div class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
@@ -300,17 +269,17 @@
                     </div>
                 </div>
             </div>
-
+            
             <!-- Despesas -->
-            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="300">
-                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-                    <div class="p-2 sm:p-3 bg-red-500 bg-opacity-20 rounded-xl sm:rounded-2xl pulse-shadow">
-                        <i data-lucide="trending-down" class="w-4 sm:w-6 h-4 sm:h-6 text-red-600"></i>
+            <div class="glass rounded-2xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="300">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="p-3 bg-red-500 bg-opacity-20 rounded-2xl pulse-shadow">
+                        <i data-lucide="trending-down" class="w-6 h-6 text-red-600"></i>
                     </div>
-                    <span class="text-red-700 text-xs font-semibold bg-red-200 px-2 sm:px-3 py-1 rounded-full text-ellipsis overflow-hidden" id="contador-despesas">0</span>
+                    <span class="text-red-700 text-xs font-semibold bg-red-200 px-3 py-1 rounded-full" id="contador-despesas">0</span>
                 </div>
-                <p class="text-gray-600 text-xs sm:text-sm mb-1">Despesas</p>
-                <p class="text-2xl sm:text-3xl font-bold text-red-600" id="total-despesas">R$ 0,00</p>
+                <p class="text-gray-600 text-sm mb-1">Despesas</p>
+                <p class="text-3xl font-bold text-red-600 break-words" id="total-despesas">R$ 0,00</p>
                 <div class="mt-3 pt-3 border-t border-gray-300">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1">
                         <span class="text-gray-500 text-xs" id="percentual-despesas">0% da receita</span>
@@ -318,91 +287,81 @@
                     </div>
                 </div>
             </div>
-
+            
             <!-- Maior Gasto -->
-            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="400">
-                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-                    <div class="p-2 sm:p-3 bg-orange-500 bg-opacity-20 rounded-xl sm:rounded-2xl pulse-shadow">
-                        <i data-lucide="target" class="w-4 sm:w-6 h-4 sm:h-6 text-orange-600"></i>
+            <div class="glass rounded-2xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="400">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="p-3 bg-orange-500 bg-opacity-20 rounded-2xl pulse-shadow">
+                        <i data-lucide="target" class="w-6 h-6 text-orange-600"></i>
                     </div>
-                    <i data-lucide="credit-card" class="w-4 sm:w-5 h-4 sm:h-5 text-gray-500"></i>
+                    <i data-lucide="credit-card" class="w-5 h-5 text-gray-500"></i>
                 </div>
-                <p class="text-gray-600 text-xs sm:text-sm mb-1">Maior Gasto</p>
-                <p class="text-2xl sm:text-3xl font-bold text-orange-600" id="maior-gasto">R$ 0,00</p>
+                <p class="text-gray-600 text-sm mb-1">Maior Gasto</p>
+                <p class="text-3xl font-bold text-orange-600 break-words" id="maior-gasto">R$ 0,00</p>
                 <div class="mt-3 pt-3 border-t border-gray-300">
-                    <p class="text-gray-500 text-xs" id="categoria-maior-gasto">Sem gastos</p>
+                    <p class="text-gray-500 text-xs truncate" id="categoria-maior-gasto">Sem gastos</p>
                 </div>
             </div>
         </div>
-
+        
         <!-- Seção de Gráficos -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
-            <!-- Gráfico de Pizza - Distribuição de Gastos -->
-            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-right">
-                <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
-                    <i data-lucide="pie-chart" class="w-5 sm:w-6 h-5 sm:h-6 text-gray-700"></i>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">Distribuição de Gastos</h3>
-                    <div class="ml-auto">
-                        <button class="text-gray-500 hover:text-gray-700 transition-colors" onclick="toggleChartView('pie')">
-                            <i data-lucide="maximize-2" class="w-5 h-5"></i>
-                        </button>
-                    </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 mb-6 sm:mb-8">
+            <!-- Gráfico de Pizza -->
+            <div class="glass rounded-2xl p-6 shadow-2xl card-hover" data-aos="fade-right">
+                <div class="flex items-center gap-3 mb-6 flex-wrap">
+                    <i data-lucide="pie-chart" class="w-6 h-6 text-gray-700"></i>
+                    <h3 class="text-xl font-bold text-gray-800">Distribuição de Gastos</h3>
                 </div>
                 <div class="chart-container">
                     <canvas id="pieChart"></canvas>
                 </div>
             </div>
-
-            <!-- Gráfico de Linha - Evolução Temporal -->
-            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-left">
-                <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
-                    <i data-lucide="trending-up" class="w-5 sm:w-6 h-5 sm:h-6 text-gray-700"></i>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">Evolução Temporal</h3>
-                    <div class="ml-auto">
-                        <button class="text-gray-500 hover:text-gray-700 transition-colors" onclick="toggleChartView('line')">
-                            <i data-lucide="maximize-2" class="w-5 h-5"></i>
-                        </button>
-                    </div>
+            
+            <!-- Gráfico de Linha -->
+            <div class="glass rounded-2xl p-6 shadow-2xl card-hover" data-aos="fade-left">
+                <div class="flex items-center gap-3 mb-6 flex-wrap">
+                    <i data-lucide="trending-up" class="w-6 h-6 text-gray-700"></i>
+                    <h3 class="text-xl font-bold text-gray-800">Evolução Temporal</h3>
                 </div>
                 <div class="chart-container">
                     <canvas id="lineChart"></canvas>
                 </div>
             </div>
         </div>
-
+        
         <!-- Gráficos Adicionais -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
-            <!-- Gráfico de Barras - Comparação Mensal -->
-            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="100">
-                <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
-                    <i data-lucide="bar-chart-3" class="w-5 sm:w-6 h-5 sm:h-6 text-gray-700"></i>
-                    <h3 class="text-base sm:text-lg font-bold text-gray-800">Comparação Mensal</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6 sm:mb-8">
+            <!-- Gráfico de Barras -->
+            <div class="glass rounded-2xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="100">
+                <div class="flex items-center gap-3 mb-6">
+                    <i data-lucide="bar-chart-3" class="w-6 h-6 text-gray-700"></i>
+                    <h3 class="text-lg font-bold text-gray-800">Comparação Mensal</h3>
                 </div>
                 <div class="chart-container h-48">
                     <canvas id="barChart"></canvas>
                 </div>
             </div>
-
-            <!-- Gráfico Radar - Análise de Categorias -->
-            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="200">
-                <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
-                    <i data-lucide="activity" class="w-5 sm:w-6 h-5 sm:h-6 text-gray-700"></i>
-                    <h3 class="text-base sm:text-lg font-bold text-gray-800">Análise por Categoria</h3>
+            
+            <!-- Gráfico Radar -->
+            <div class="glass rounded-2xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="200">
+                <div class="flex items-center gap-3 mb-6">
+                    <i data-lucide="activity" class="w-6 h-6 text-gray-700"></i>
+                    <h3 class="text-lg font-bold text-gray-800">Análise por Categoria</h3>
                 </div>
                 <div class="chart-container h-48">
                     <canvas id="radarChart"></canvas>
                 </div>
             </div>
-
-            <!-- Metas e Progresso -->
-            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="300">
-                <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
-                    <i data-lucide="target" class="w-5 sm:w-6 h-5 sm:h-6 text-gray-700"></i>
-                    <h3 class="text-base sm:text-lg font-bold text-gray-800">Metas Financeiras</h3>
+            
+            <!-- Metas -->
+            <div class="glass rounded-2xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="300">
+                <div class="flex items-center gap-3 mb-6">
+                    <i data-lucide="target" class="w-6 h-6 text-gray-700"></i>
+                    <h3 class="text-lg font-bold text-gray-800">Metas Financeiras</h3>
                 </div>
                 <div class="space-y-4">
                     <div>
-                        <div class="flex justify-between text-gray-700 text-xs sm:text-sm mb-2">
+                        <div class="flex justify-between text-gray-700 text-sm mb-2">
                             <span>Meta Economia</span>
                             <span id="meta-economia-percent">0%</span>
                         </div>
@@ -411,7 +370,7 @@
                         </div>
                     </div>
                     <div>
-                        <div class="flex justify-between text-gray-700 text-xs sm:text-sm mb-2">
+                        <div class="flex justify-between text-gray-700 text-sm mb-2">
                             <span>Controle de Gastos</span>
                             <span id="meta-gastos-percent">0%</span>
                         </div>
@@ -420,7 +379,7 @@
                         </div>
                     </div>
                     <div>
-                        <div class="flex justify-between text-gray-700 text-xs sm:text-sm mb-2">
+                        <div class="flex justify-between text-gray-700 text-sm mb-2">
                             <span>Diversificação</span>
                             <span id="meta-diversificacao-percent">0%</span>
                         </div>
@@ -431,840 +390,124 @@
                 </div>
             </div>
         </div>
-
+        
         <!-- Botões de Ação -->
-        <div class="flex flex-col sm:flex-row justify-center gap-2 sm:gap-3 mb-6 sm:mb-8 px-0 sm:px-2" data-aos="zoom-in">
-            <button onclick="abrirModal()" class="glass hover:bg-gray-200 hover:bg-opacity-60 text-gray-800 font-semibold px-3 sm:px-8 py-2 sm:py-4 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 pulse-shadow text-xs sm:text-base">
-                <i data-lucide="plus" class="w-4 sm:w-6 h-4 sm:h-6"></i>
+        <div class="flex flex-col sm:flex-row justify-center gap-3 mb-6 sm:mb-8" data-aos="zoom-in">
+            <button onclick="abrirModal()" class="glass hover:bg-gray-200 hover:bg-opacity-60 text-gray-800 font-semibold px-8 py-4 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 hover:scale-105 pulse-shadow">
+                <i data-lucide="plus" class="w-6 h-6"></i>
                 Nova Transação
             </button>
-            <button onclick="exportarDados()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-3 sm:px-6 py-2 sm:py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 text-xs sm:text-base">
-                <i data-lucide="download" class="w-4 sm:w-5 h-4 sm:h-5"></i>
+            <button onclick="exportarDados()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-6 py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-3 hover:scale-105">
+                <i data-lucide="download" class="w-5 h-5"></i>
                 Exportar
             </button>
-            <button onclick="toggleDarkMode()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-3 sm:px-6 py-2 sm:py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 text-xs sm:text-base">
-                <i data-lucide="moon" class="w-5 sm:w-5 h-5 sm:h-5" id="theme-icon"></i>
+            <button onclick="toggleDarkMode()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-6 py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-3 hover:scale-105">
+                <i data-lucide="moon" class="w-5 h-5" id="theme-icon"></i>
                 Tema
             </button>
         </div>
-
+        
         <!-- Lista de Transações -->
-        <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl" data-aos="fade-up">
-            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">Transações Recentes</h2>
+        <div class="glass rounded-2xl p-6 shadow-2xl mb-8" data-aos="fade-up">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Transações Recentes</h2>
             <div id="lista-transacoes" class="space-y-3">
-                <div class="text-center py-8 sm:py-12 px-2">
-                    <p class="text-gray-500 text-base sm:text-lg">Nenhuma transação registrada</p>
-                    <p class="text-gray-400 text-xs sm:text-sm mt-2">Adicione sua primeira transação</p>
+                <div class="text-center py-12">
+                    <p class="text-gray-500 text-lg">Nenhuma transação registrada</p>
+                    <p class="text-gray-400 text-sm mt-2">Adicione sua primeira transação</p>
                 </div>
             </div>
         </div>
     </div>
-
+    
     <!-- Modal -->
-    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 hidden overflow-y-auto">
-        <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl w-full shadow-2xl overflow-hidden flex flex-col my-auto" style="max-width: 28rem; max-height: 90vh;">
-            <div class="flex justify-between items-start sm:items-center p-4 sm:p-6 border-b border-gray-200 flex-shrink-0">
-                <h3 class="text-lg sm:text-2xl font-bold text-gray-800 flex-1 pr-2">Nova Transação</h3>
-                <button onclick="fecharModal()" class="p-2 hover:bg-gray-200 hover:bg-opacity-50 rounded-full transition-colors flex-shrink-0">
-                    <i data-lucide="x" class="w-4 sm:w-6 h-4 sm:h-6 text-gray-600"></i>
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden overflow-y-auto">
+        <div class="glass bg-white bg-opacity-95 rounded-3xl w-full shadow-2xl overflow-hidden flex flex-col my-auto" style="max-width: 28rem; max-height: 90vh;">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200 flex-shrink-0">
+                <h3 class="text-2xl font-bold text-gray-800">Nova Transação</h3>
+                <button onclick="fecharModal()" class="p-2 hover:bg-gray-200 hover:bg-opacity-50 rounded-full transition-colors">
+                    <i data-lucide="x" class="w-6 h-6 text-gray-600"></i>
                 </button>
             </div>
-
-            <div class="overflow-y-auto flex-1 p-4 sm:p-6">
-                <div class="space-y-2 sm:space-y-4">
+            <div class="overflow-y-auto flex-1 p-6">
+                <div class="space-y-4">
                     <div>
-                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Tipo</label>
-                        <div class="grid grid-cols-2 gap-2 sm:gap-3">
-                            <button onclick="selecionarTipo('income')" id="btn-income" class="p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 border-green-500 bg-green-50 transition-all flex items-center justify-center gap-2 text-sm">
-                                <i data-lucide="trending-up" class="w-4 sm:w-5 h-4 sm:h-5 text-green-600"></i>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="selecionarTipo('income')" id="btn-income" class="p-4 rounded-xl border-2 border-green-500 bg-green-50 transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="trending-up" class="w-5 h-5 text-green-600"></i>
                                 Receita
                             </button>
-                            <button onclick="selecionarTipo('expense')" id="btn-expense" class="p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 border-gray-300 hover:border-red-500 transition-all flex items-center justify-center gap-2 text-sm">
-                                <i data-lucide="trending-down" class="w-4 sm:w-5 h-4 sm:h-5 text-red-600"></i>
+                            <button onclick="selecionarTipo('expense')" id="btn-expense" class="p-4 rounded-xl border-2 border-gray-300 hover:border-red-500 transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="trending-down" class="w-5 h-5 text-red-600"></i>
                                 Despesa
                             </button>
                         </div>
                     </div>
-
                     <div>
-                        <label class="block text-sm sm:text-sm font-medium text-gray-700 mb-2">Valor (R$)</label>
-                        <input type="number" step="0.01" id="valor" class="w-full p-3 sm:p-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0,00">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Valor (R$)</label>
+                        <input type="number" step="0.01" id="valor" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0,00" style="font-size: 16px;">
                     </div>
-
                     <div>
-                        <label class="block text-sm sm:text-sm font-medium text-gray-700 mb-2">Categoria</label>
-                        <select id="categoria" class="w-full p-3 sm:p-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                        <select id="categoria" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" style="font-size: 16px;">
                             <option value="">Selecione uma categoria</option>
                         </select>
                     </div>
-
                     <div>
-                        <label class="block text-sm sm:text-sm font-medium text-gray-700 mb-2">Descrição</label>
-                        <input type="text" id="descricao" class="w-full p-3 sm:p-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
+                        <input type="text" id="descricao" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional" style="font-size: 16px;">
                     </div>
-
                     <div>
-                        <label class="block text-sm sm:text-sm font-medium text-gray-700 mb-2">Data</label>
-                        <input type="date" id="data" class="w-full p-3 sm:p-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Data</label>
+                        <input type="date" id="data" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" style="font-size: 16px;">
                     </div>
                 </div>
             </div>
-
-            <div class="border-t border-gray-200 p-4 sm:p-6 flex gap-3 flex-shrink-0">
-                <button onclick="fecharModal()" class="flex-1 px-4 sm:px-6 py-3 text-base border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-medium">
+            <div class="border-t border-gray-200 p-6 flex gap-3 flex-shrink-0">
+                <button onclick="fecharModal()" class="flex-1 px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-medium">
                     Cancelar
                 </button>
-                <button onclick="adicionarTransacao()" class="flex-1 px-4 sm:px-6 py-3 text-base bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors font-medium">
+                <button onclick="adicionarTransacao()" class="flex-1 px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors font-medium">
                     Adicionar
                 </button>
             </div>
         </div>
     </div>
-
-    <!-- Modal Nome do Usuário -->
-    <div id="name-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 hidden overflow-y-auto">
-        <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl w-full shadow-2xl overflow-hidden flex flex-col my-auto" style="max-width: 28rem; max-height: 90vh;">
-            <div class="p-4 sm:p-6 border-b border-gray-200 flex-shrink-0">
-                <h3 class="text-lg sm:text-xl font-bold text-gray-800">Como prefere ser chamado?</h3>
+    
+    <!-- Modal Nome -->
+    <div id="name-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden overflow-y-auto">
+        <div class="glass bg-white bg-opacity-95 rounded-3xl w-full shadow-2xl overflow-hidden flex flex-col my-auto" style="max-width: 28rem; max-height: 90vh;">
+            <div class="p-6 border-b border-gray-200 flex-shrink-0">
+                <h3 class="text-xl font-bold text-gray-800">Como prefere ser chamado?</h3>
             </div>
-            
-            <div class="overflow-y-auto flex-1 p-4 sm:p-6">
-                <input id="username-input" type="text" class="w-full p-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Seu nome">
+            <div class="overflow-y-auto flex-1 p-6">
+                <input id="username-input" type="text" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Seu nome" style="font-size: 16px;">
             </div>
-            
-            <div class="border-t border-gray-200 p-4 sm:p-6 flex gap-3 justify-end flex-shrink-0">
-                <button onclick="skipName()" class="px-4 sm:px-6 py-3 text-base border rounded-xl hover:bg-gray-50 transition-colors font-medium">Pular</button>
-                <button onclick="saveNameFromModal()" class="px-4 sm:px-6 py-3 text-base bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors font-medium">Salvar</button>
+            <div class="border-t border-gray-200 p-6 flex gap-3 justify-end flex-shrink-0">
+                <button onclick="skipName()" class="px-6 py-3 border rounded-xl hover:bg-gray-50 transition-colors font-medium">Pular</button>
+                <button onclick="saveNameFromModal()" class="px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors font-medium">Salvar</button>
             </div>
         </div>
     </div>
-
+    
+    <!-- Rodapé -->
+    <footer class="w-full py-4 bg-transparent text-center">
+        <p class="text-xs text-gray-700">MGV Group — Todos os direitos reservados, 2025</p>
+    </footer>
+    
     <script>
-        // Inicializar ícones Lucide e AOS
         lucide.createIcons();
         AOS.init({
             duration: 800,
             easing: 'ease-out-cubic'
         });
-
-        // Dados e gráficos
-        // `transacoes` será carregado do IndexedDB na inicialização
+        
         let transacoes = [];
         let tipoSelecionado = 'income';
         let charts = {};
-        let db; // Dexie DB instance
-
-        // Inicializa IndexedDB via Dexie e migra localStorage se necessário
-        async function initDBandMigrate() {
-            if (typeof Dexie === 'undefined') {
-                console.warn('Dexie não carregado; usando localStorage como fallback');
-                return;
-            }
-
-            db = new Dexie('financeiroDB');
-            // versão 1: transacoes, versão 2: adiciona store `app` para configurações (ex.: username)
-            db.version(1).stores({ transacoes: 'id,date,type,category,amount' });
-            db.version(2).stores({ transacoes: 'id,date,type,category,amount', app: 'key' });
-            await db.open();
-
-            // Se DB vazio mas houver dados em localStorage, migrar
-            const count = await db.transacoes.count();
-            const local = JSON.parse(localStorage.getItem('transacoes') || '[]');
-            const migratedFlag = localStorage.getItem('transacoes_migrated');
-            if (count === 0 && Array.isArray(local) && local.length > 0 && !migratedFlag) {
-                try {
-                    await db.transacoes.bulkPut(local);
-                    // marca como migrado para não sobrescrever no futuro
-                    localStorage.setItem('transacoes_migrated', new Date().toISOString());
-                } catch (e) {
-                    console.error('Erro migrando para IndexedDB', e);
-                }
-            }
-        }
-
-        async function loadTransacoesFromDB() {
-            if (db) {
-                // ordenar por id decrescente para manter comportamento atual (unshift)
-                const all = await db.transacoes.orderBy('id').reverse().toArray();
-                transacoes = all || [];
-            } else {
-                transacoes = JSON.parse(localStorage.getItem('transacoes') || '[]');
-            }
-        }
-
-        // Usuario (nome) helpers
-        async function getSavedUsername() {
-            if (!db) return localStorage.getItem('username') || null;
-            try {
-                const rec = await db.app.get('username');
-                return rec ? rec.value : null;
-            } catch (e) {
-                console.error('Erro lendo username do DB', e);
-                return null;
-            }
-        }
-
-        async function saveUsername(name) {
-            if (!db) {
-                localStorage.setItem('username', name);
-                return;
-            }
-            try {
-                await db.app.put({ key: 'username', value: name });
-            } catch (e) {
-                console.error('Erro salvando username no DB', e);
-            }
-        }
-
-        async function saveTransacaoToDB(transacao) {
-            if (db) {
-                await db.transacoes.put(transacao);
-            } else {
-                // fallback
-                transacoes.unshift(transacao);
-                localStorage.setItem('transacoes', JSON.stringify(transacoes));
-            }
-        }
-
-        async function removeTransacaoFromDB(id) {
-            if (db) {
-                await db.transacoes.delete(id);
-            } else {
-                transacoes = transacoes.filter(t => t.id !== id);
-                localStorage.setItem('transacoes', JSON.stringify(transacoes));
-            }
-        }
-
-        // Configurações dos gráficos
-        const chartConfig = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: 'rgba(75, 85, 99, 0.8)',
-                        font: { family: 'system-ui' }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    grid: { color: 'rgba(75, 85, 99, 0.1)' },
-                    ticks: { color: 'rgba(75, 85, 99, 0.8)' }
-                },
-                x: {
-                    grid: { color: 'rgba(75, 85, 99, 0.1)' },
-                    ticks: { color: 'rgba(75, 85, 99, 0.8)' }
-                }
-            }
-        };
-
-        // Categorias
+        let db;
+        
         const categorias = {
             income: ['Salário', 'Freelance', 'Investimentos', 'Outros'],
-            expense: ['Alimentação', 'Transporte', 'Moradia', 'Lazer', 'Saúde', 'Educação', 'Compras', 'Contas', 'Outros']
+            expense: ['Alimentação', 'Transporte', 'Lazer', 'Saúde', 'Educação', 'Moradia', 'Outros']
         };
-
-        // Inicializar (agora assíncrono para suportar IndexedDB)
-        document.addEventListener('DOMContentLoaded', async function() {
-            document.getElementById('data').value = new Date().toISOString().split('T')[0];
-            await initDBandMigrate();
-            await loadTransacoesFromDB();
-            // carregar/salvar nome do usuário e exibir modal se necessário
-            const savedName = await getSavedUsername();
-            if (savedName) {
-                // atualizar saudação
-                setGreeting(savedName);
-            } else {
-                // abrir modal de nome
-                showNameModal();
-            }
-
-            atualizarCategorias();
-            atualizarDashboard();
-            criarGraficos();
-            atualizarUltimaAtualizacao();
-            setInterval(atualizarUltimaAtualizacao, 60000); // Atualizar a cada minuto
-        });
-
-        function atualizarUltimaAtualizacao() {
-            const agora = new Date();
-            const formato = agora.toLocaleTimeString('pt-BR', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
-            document.getElementById('ultimo-update').textContent = `Última atualização: ${formato}`;
-        }
-
-        // Atualiza o título com saudação curta dependendo do horário
-        function setGreeting(name) {
-            const h1 = document.querySelector('h1');
-            if (!h1) return;
-            const hora = new Date().getHours();
-            let saudacao = 'Olá';
-            if (hora >= 5 && hora < 12) {
-                saudacao = 'Bom dia';
-            } else if (hora >= 12 && hora < 18) {
-                saudacao = 'Boa tarde';
-            } else {
-                saudacao = 'Boa noite';
-            }
-            // Saudação curta na linha principal, subtítulo permanece abaixo
-            h1.textContent = `${saudacao}, ${name}.`;
-        }
-
-        function criarGraficos() {
-            criarGraficoPizza();
-            criarGraficoLinha();
-            criarGraficoBarras();
-            criarGraficoRadar();
-        }
-
-        function criarGraficoPizza() {
-            const ctx = document.getElementById('pieChart').getContext('2d');
-            const categoriasDespesa = {};
-            
-            transacoes.filter(t => t.type === 'expense').forEach(t => {
-                categoriasDespesa[t.category] = (categoriasDespesa[t.category] || 0) + t.amount;
-            });
-
-            const cores = [
-                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
-                '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
-            ];
-
-            if (charts.pie) charts.pie.destroy();
-            
-            charts.pie = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                        labels: Object.keys(categoriasDespesa),
-                        datasets: [{
-                        data: Object.values(categoriasDespesa),
-                        backgroundColor: cores.slice(0, Object.keys(categoriasDespesa).length),
-                        borderColor: 'rgba(75, 85, 99, 0.8)',
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    ...chartConfig,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: 'rgba(75, 85, 99, 0.8)',
-                                padding: 20,
-                                font: { size: 12 }
-                            }
-                        }
-                    },
-                    cutout: '60%'
-                }
-            });
-        }
-
-        function criarGraficoLinha() {
-            const ctx = document.getElementById('lineChart').getContext('2d');
-            
-            // Dados dos últimos 30 dias
-            const dados = Array.from({length: 30}, (_, i) => {
-                const data = new Date();
-                data.setDate(data.getDate() - (29 - i));
-                const dataStr = data.toISOString().split('T')[0];
-                
-                const receitas = transacoes
-                    .filter(t => t.date === dataStr && t.type === 'income')
-                    .reduce((sum, t) => sum + t.amount, 0);
-                
-                const despesas = transacoes
-                    .filter(t => t.date === dataStr && t.type === 'expense')
-                    .reduce((sum, t) => sum + t.amount, 0);
-                
-                return {
-                    data: data.getDate(),
-                    receitas,
-                    despesas,
-                    saldo: receitas - despesas
-                };
-            });
-
-            if (charts.line) charts.line.destroy();
-            
-            charts.line = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: dados.map(d => d.data),
-                    datasets: [
-                        {
-                            label: 'Receitas',
-                            data: dados.map(d => d.receitas),
-                            borderColor: '#22c55e',
-                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Despesas',
-                            data: dados.map(d => d.despesas),
-                            borderColor: '#ef4444',
-                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                            fill: true,
-                            tension: 0.4
-                        }
-                    ]
-                },
-                options: chartConfig
-            });
-        }
-
-        function criarGraficoBarras() {
-            const ctx = document.getElementById('barChart').getContext('2d');
-            
-            // Dados dos últimos 6 meses
-            const meses = Array.from({length: 6}, (_, i) => {
-                const data = new Date();
-                data.setMonth(data.getMonth() - (5 - i));
-                return {
-                    nome: data.toLocaleDateString('pt-BR', { month: 'short' }),
-                    mes: data.toISOString().substring(0, 7)
-                };
-            });
-
-            const dadosMeses = meses.map(m => {
-                const receitas = transacoes
-                    .filter(t => t.date.startsWith(m.mes) && t.type === 'income')
-                    .reduce((sum, t) => sum + t.amount, 0);
-                
-                const despesas = transacoes
-                    .filter(t => t.date.startsWith(m.mes) && t.type === 'expense')
-                    .reduce((sum, t) => sum + t.amount, 0);
-                
-                return { nome: m.nome, receitas, despesas };
-            });
-
-            if (charts.bar) charts.bar.destroy();
-            
-            charts.bar = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: dadosMeses.map(d => d.nome),
-                    datasets: [
-                        {
-                            label: 'Receitas',
-                            data: dadosMeses.map(d => d.receitas),
-                            backgroundColor: 'rgba(34, 197, 94, 0.8)'
-                        },
-                        {
-                            label: 'Despesas',
-                            data: dadosMeses.map(d => d.despesas),
-                            backgroundColor: 'rgba(239, 68, 68, 0.8)'
-                        }
-                    ]
-                },
-                options: chartConfig
-            });
-        }
-
-        function criarGraficoRadar() {
-            const ctx = document.getElementById('radarChart').getContext('2d');
-            
-            const categorias = ['Alimentação', 'Transporte', 'Moradia', 'Lazer', 'Saúde'];
-            const dados = categorias.map(cat => {
-                return transacoes
-                    .filter(t => t.category === cat && t.type === 'expense')
-                    .reduce((sum, t) => sum + t.amount, 0);
-            });
-
-            if (charts.radar) charts.radar.destroy();
-            
-            charts.radar = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: categorias,
-                    datasets: [{
-                        label: 'Gastos por Categoria',
-                        data: dados,
-                        borderColor: '#8b5cf6',
-                        backgroundColor: 'rgba(139, 92, 246, 0.2)',
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'rgba(75, 85, 99, 0.8)'
-                            }
-                        }
-                    },
-                    scales: {
-                        r: {
-                            grid: { color: 'rgba(75, 85, 99, 0.1)' },
-                            ticks: { color: 'rgba(75, 85, 99, 0.8)' }
-                        }
-                    }
-                }
-            });
-        }
-
-        async function exportarDados() {
-            let all = transacoes;
-            if (db) {
-                all = await db.transacoes.toArray();
-            }
-
-            const dados = {
-                transacoes: all,
-                resumo: {
-                    totalReceitas: all.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0),
-                    totalDespesas: all.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0),
-                    totalTransacoes: all.length
-                }
-            };
-
-            const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `financeiro_${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function toggleDarkMode() {
-            // Implementação do modo escuro - placeholder
-            console.log('Modo escuro - funcionalidade futura');
-        }
-
-        function toggleChartView(tipo) {
-            // Implementação para expandir gráfico - placeholder
-            console.log('Expandir gráfico:', tipo);
-        }
-
-        function abrirModal() {
-            document.getElementById('modal').classList.remove('hidden');
-        }
-
-        function fecharModal() {
-            document.getElementById('modal').classList.add('hidden');
-            limparFormulario();
-        }
-
-        function selecionarTipo(tipo) {
-            tipoSelecionado = tipo;
-            
-            // Atualizar botões
-            document.getElementById('btn-income').className = tipo === 'income' 
-                ? 'p-2 sm:p-4 rounded-lg sm:rounded-xl border-2 border-green-500 bg-green-50 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm'
-                : 'p-2 sm:p-4 rounded-lg sm:rounded-xl border-2 border-gray-300 hover:border-green-500 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm';
-            
-            document.getElementById('btn-expense').className = tipo === 'expense' 
-                ? 'p-2 sm:p-4 rounded-lg sm:rounded-xl border-2 border-red-500 bg-red-50 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm'
-                : 'p-2 sm:p-4 rounded-lg sm:rounded-xl border-2 border-gray-300 hover:border-red-500 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm';
-            
-            atualizarCategorias();
-        }
-
-        function atualizarCategorias() {
-            const select = document.getElementById('categoria');
-            select.innerHTML = '<option value="">Selecione uma categoria</option>';
-            
-            categorias[tipoSelecionado].forEach(categoria => {
-                const option = document.createElement('option');
-                option.value = categoria;
-                option.textContent = categoria;
-                select.appendChild(option);
-            });
-        }
-
-        async function adicionarTransacao() {
-            const valor = parseFloat(document.getElementById('valor').value);
-            const categoria = document.getElementById('categoria').value;
-            const descricao = document.getElementById('descricao').value;
-            const data = document.getElementById('data').value;
-
-            if (!valor || !categoria) {
-                alert('Preencha o valor e a categoria');
-                return;
-            }
-
-            const transacao = {
-                id: Date.now(),
-                type: tipoSelecionado,
-                amount: valor,
-                category: categoria,
-                description: descricao,
-                date: data
-            };
-
-            // salvar no DB (ou fallback localStorage)
-            await saveTransacaoToDB(transacao);
-            // atualizar array em memória para UI imediata
-            transacoes.unshift(transacao);
-
-            atualizarDashboard();
-            fecharModal();
-        }
-
-        async function removerTransacao(id) {
-            await removeTransacaoFromDB(id);
-            transacoes = transacoes.filter(t => t.id !== id);
-            atualizarDashboard();
-        }
-
-        function limparFormulario() {
-            document.getElementById('valor').value = '';
-            document.getElementById('categoria').value = '';
-            document.getElementById('descricao').value = '';
-            document.getElementById('data').value = new Date().toISOString().split('T')[0];
-            selecionarTipo('income');
-        }
-
-        // Name modal handlers
-        function showNameModal() {
-            document.getElementById('name-modal').classList.remove('hidden');
-            const input = document.getElementById('username-input');
-            if (input) input.focus();
-        }
-
-        function hideNameModal() {
-            document.getElementById('name-modal').classList.add('hidden');
-        }
-
-        async function saveNameFromModal() {
-            const input = document.getElementById('username-input');
-            if (!input) return;
-            const name = input.value && input.value.trim();
-            if (!name) {
-                alert('Digite um nome válido');
-                return;
-            }
-            await saveUsername(name);
-            setGreeting(name);
-            hideNameModal();
-        }
-
-        // Abre o modal de nome já preenchido para renomear
-        async function renameUsername() {
-            const current = await getSavedUsername();
-            const input = document.getElementById('username-input');
-            if (input) input.value = current || '';
-            showNameModal();
-            if (input) input.focus();
-        }
-
-        // Exclui todas as transações e o nome salvo (IndexedDB + localStorage)
-        async function deleteAllData() {
-            const ok = confirm('Confirma excluir TODOS os dados (transações e nome)? Esta ação não pode ser desfeita.');
-            if (!ok) return;
-            try {
-                if (db) {
-                    try { await db.transacoes.clear(); } catch(e){ console.warn('Erro limpando transacoes do DB', e); }
-                    try { await db.app.clear(); } catch(e){ /* ignore if store missing */ }
-                }
-                localStorage.removeItem('transacoes');
-                localStorage.removeItem('username');
-                localStorage.removeItem('transacoes_migrated');
-            } catch (e) {
-                console.error('Erro ao excluir dados', e);
-            }
-            transacoes = [];
-            atualizarDashboard();
-            alert('Dados excluídos com sucesso.');
-        }
-
-        function skipName() {
-            hideNameModal();
-        }
-
-        function atualizarDashboard() {
-            const receitas = transacoes.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
-            const despesas = transacoes.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
-            const saldo = receitas - despesas;
-
-            // Atualizar cards principais
-            document.getElementById('saldo-total').textContent = `R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-            document.getElementById('total-receitas').textContent = `R$ ${receitas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-            document.getElementById('total-despesas').textContent = `R$ ${despesas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-            
-            // Contadores
-            const qtdReceitas = transacoes.filter(t => t.type === 'income').length;
-            const qtdDespesas = transacoes.filter(t => t.type === 'expense').length;
-            document.getElementById('contador-receitas').textContent = `+${qtdReceitas}`;
-            document.getElementById('contador-despesas').textContent = `${qtdDespesas}`;
-
-            // Taxa de economia
-            const taxaEconomia = receitas > 0 ? ((saldo / receitas) * 100).toFixed(1) : 0;
-            document.getElementById('taxa-economia').textContent = `Taxa de economia: ${taxaEconomia}%`;
-
-            // Percentual de despesas
-            const percentualDespesas = receitas > 0 ? ((despesas / receitas) * 100).toFixed(1) : 0;
-            document.getElementById('percentual-despesas').textContent = `${percentualDespesas}% da receita`;
-
-            // Maior gasto
-            const maioresGastos = transacoes.filter(t => t.type === 'expense').sort((a, b) => b.amount - a.amount);
-            if (maioresGastos.length > 0) {
-                const maiorGasto = maioresGastos[0];
-                document.getElementById('maior-gasto').textContent = `R$ ${maiorGasto.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-                document.getElementById('categoria-maior-gasto').textContent = maiorGasto.category;
-            } else {
-                document.getElementById('maior-gasto').textContent = 'R$ 0,00';
-                document.getElementById('categoria-maior-gasto').textContent = 'Sem gastos';
-            }
-
-            // Atualizar métricas rápidas
-            atualizarMetricasRapidas();
-
-            // Atualizar cor do saldo
-            const saldoElement = document.getElementById('saldo-total');
-            saldoElement.className = saldo >= 0 ? 'text-3xl font-bold text-gray-800' : 'text-3xl font-bold text-red-600';
-
-            // Atualizar lista de transações
-            atualizarListaTransacoes();
-            
-            // Atualizar gráficos
-            if (Object.keys(charts).length > 0) {
-                criarGraficos();
-            }
-        }
-
-        function atualizarMetricasRapidas() {
-            const receitas = transacoes.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
-            const despesas = transacoes.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
-            const saldo = receitas - despesas;
-
-            // Meta de economia
-            const metaEconomia = receitas > 0 ? Math.min(100, (saldo / receitas) * 100) : 0;
-            document.getElementById('meta-economia').textContent = `${metaEconomia.toFixed(0)}%`;
-            
-            // Atualizar círculo de progresso
-            const circunferencia = 2 * Math.PI * 18;
-            const offset = circunferencia - (metaEconomia / 100) * circunferencia;
-            document.getElementById('meta-progress').style.strokeDashoffset = offset;
-
-            // Dias consecutivos sem gastos
-            let diasConsecutivos = 0;
-            const hoje = new Date();
-            for (let i = 0; i < 30; i++) {
-                const data = new Date(hoje);
-                data.setDate(hoje.getDate() - i);
-                const dataStr = data.toISOString().split('T')[0];
-                
-                const temGasto = transacoes.some(t => t.date === dataStr && t.type === 'expense');
-                if (temGasto) break;
-                diasConsecutivos++;
-            }
-            document.getElementById('dias-consecutivos').textContent = diasConsecutivos;
-
-            // Média diária de gastos
-            const diasComTransacao = new Set(transacoes.map(t => t.date)).size;
-            const mediaDiaria = diasComTransacao > 0 ? despesas / diasComTransacao : 0;
-            document.getElementById('media-diaria').textContent = `R$ ${mediaDiaria.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`;
-
-            // Projeção do mês
-            const diaAtual = new Date().getDate();
-            const diasNoMes = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-            const projecaoMes = (despesas / diaAtual) * diasNoMes;
-            document.getElementById('projecao-mes').textContent = `R$ ${projecaoMes.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`;
-
-            // Atualizar barras de progresso das metas
-            document.getElementById('meta-economia-percent').textContent = `${metaEconomia.toFixed(0)}%`;
-            document.getElementById('progress-economia').style.width = `${metaEconomia}%`;
-
-            const controleGastos = receitas > 0 ? Math.min(100, 100 - (despesas / receitas) * 100) : 100;
-            document.getElementById('meta-gastos-percent').textContent = `${controleGastos.toFixed(0)}%`;
-            document.getElementById('progress-gastos').style.width = `${controleGastos}%`;
-
-            const categorias = new Set(transacoes.filter(t => t.type === 'expense').map(t => t.category));
-            const diversificacao = Math.min(100, (categorias.size / 8) * 100);
-            document.getElementById('meta-diversificacao-percent').textContent = `${diversificacao.toFixed(0)}%`;
-            document.getElementById('progress-diversificacao').style.width = `${diversificacao}%`;
-        }
-
-        function atualizarListaTransacoes() {
-            const container = document.getElementById('lista-transacoes');
-            
-            if (transacoes.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-8 sm:py-12 px-2">
-                        <p class="text-gray-500 text-base sm:text-lg">Nenhuma transação registrada</p>
-                        <p class="text-gray-400 text-xs sm:text-sm mt-2">Adicione sua primeira transação</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = transacoes.slice(0, 10).map(transacao => `
-                <div class="glass bg-white bg-opacity-20 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white border-opacity-20 hover:bg-white hover:bg-opacity-25 transition-all duration-300 overflow-hidden">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3">
-                        <div class="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                            <div class="p-2 rounded-lg flex-shrink-0 ${transacao.type === 'income' ? 'bg-green-400 bg-opacity-30' : 'bg-red-400 bg-opacity-30'}">
-                                <i data-lucide="${transacao.type === 'income' ? 'trending-up' : 'trending-down'}" class="w-4 h-4 text-black"></i>
-                            </div>
-                            
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-1 mb-1 flex-wrap">
-                                    <span class="text-lg">${getCategoryIcon(transacao.category)}</span>
-                                    <p class="font-semibold text-black text-sm truncate">${transacao.category}</p>
-                                </div>
-                                <div class="flex items-center gap-1 flex-wrap">
-                                    <p class="text-black text-opacity-60 text-xs truncate">${transacao.description || 'Sem descrição'}</p>
-                                    <span class="text-black text-opacity-40 text-xs">•</span>
-                                    <p class="text-black text-opacity-50 text-xs whitespace-nowrap">
-                                        ${new Date(transacao.date + 'T00:00:00').toLocaleDateString('pt-BR')}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center gap-2 flex-shrink-0">
-                            <p class="text-sm sm:text-lg font-bold whitespace-nowrap ${transacao.type === 'income' ? 'text-green-200' : 'text-red-200'}">
-                                ${transacao.type === 'income' ? '+' : '-'} R$ ${transacao.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                            </p>
-                            <button onclick="removerTransacao(${transacao.id})" class="p-1 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors flex-shrink-0">
-                                <i data-lucide="trash-2" class="w-3 h-3 text-black text-opacity-60 hover:text-red-300"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Reinicializar ícones após atualizar o DOM
-            lucide.createIcons();
-        }
-
-        function getCategoryIcon(category) {
-            const icons = {
-                'Alimentação': '🍽️',
-                'Transporte': '🚗',
-                'Moradia': '🏠',
-                'Lazer': '🎮',
-                'Saúde': '💊',
-                'Educação': '📚',
-                'Compras': '🛍️',
-                'Contas': '📄',
-                'Salário': '💰',
-                'Freelance': '💻',
-                'Investimentos': '📈',
-                'Outros': '📦'
-            };
-            return icons[category] || '📦';
-        }
-
-        // Fechar modal ao clicar fora
-        document.getElementById('modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                fecharModal();
-            }
-        });
-    </script>
-</script>
-
-    <!-- Rodapé -->
-    <footer class="w-full mt-6 sm:mt-8 py-2 sm:py-4 bg-transparent text-center px-2">
-        <p class="text-xs text-gray-700">MGV Group — Todos os direitos reservados, 2025</p>
-    </footer>
-</body>
-</html>
