@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Financeiro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/dexie@3.2.2/dist/dexie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%);
+        }
+        /* Cor padrão do texto (permite que classes de utilitário sobrescrevam cores específicas) */
+        body {
+            color: #000000;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        }
+        .pulse-shadow {
+            animation: pulseShadow 2s infinite;
+        }
+        @keyframes pulseShadow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.1); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 0, 0, 0); }
+        }
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        .progress-ring-circle {
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            transition: stroke-dashoffset 0.5s ease-in-out;
+        }
+        .sparkline {
+            fill: none;
+            stroke-width: 2;
+            vector-effect: non-scaling-stroke;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <div class="container mx-auto p-8">
+        <!-- Header -->
+        <div class="text-center mb-8" data-aos="fade-down">
+            <h1 class="text-5xl md:text-6xl font-bold text-gray-800 mb-3 floating">Dashboard Financeiro</h1>
+            <p class="text-gray-600 text-lg">Análise completa das suas finanças</p>
+            <div class="mt-4 flex justify-center">
+                <div class="pulse-shadow bg-gray-200 bg-opacity-50 rounded-full px-6 py-2">
+                    <span class="text-gray-700 text-sm font-medium" id="ultimo-update">Última atualização: agora</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Métricas Rápidas -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="glass rounded-2xl p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="100">
+                <div class="text-2xl font-bold text-gray-800" id="meta-economia">20%</div>
+                <div class="text-gray-600 text-sm">Meta Economia</div>
+                <div class="mt-2">
+                    <svg class="progress-ring w-12 h-12 mx-auto">
+                        <circle class="progress-ring-circle" stroke="rgba(255,255,255,0.3)" stroke-width="3" fill="transparent" r="18" cx="24" cy="24"/>
+                        <circle class="progress-ring-circle" stroke="#22c55e" stroke-width="3" fill="transparent" r="18" cx="24" cy="24" id="meta-progress"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="glass rounded-2xl p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="200">
+                <div class="text-2xl font-bold text-gray-800" id="dias-consecutivos">0</div>
+                <div class="text-gray-600 text-sm">Dias sem gastos</div>
+                <div class="text-3xl mt-1">🔥</div>
+            </div>
+            <div class="glass rounded-2xl p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="300">
+                <div class="text-2xl font-bold text-gray-800" id="media-diaria">R$ 0</div>
+                <div class="text-gray-600 text-sm">Média Diária</div>
+                <div class="text-3xl mt-1">📊</div>
+            </div>
+            <div class="glass rounded-2xl p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="400">
+                <div class="text-2xl font-bold text-gray-800" id="projecao-mes">R$ 0</div>
+                <div class="text-gray-600 text-sm">Projeção Mês</div>
+                <div class="text-3xl mt-1">🎯</div>
+            </div>
+        </div>
+
+        <!-- Cards Principais -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <!-- Saldo Total -->
+            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="100">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="p-3 bg-blue-500 bg-opacity-20 rounded-2xl pulse-shadow">
+                        <i data-lucide="wallet" class="w-6 h-6 text-blue-600"></i>
+                    </div>
+                    <div class="text-right">
+                        <svg class="w-16 h-8 sparkline" viewBox="0 0 100 30">
+                            <polyline class="sparkline" stroke="#60a5fa" points="0,20 20,15 40,25 60,10 80,18 100,12" id="sparkline-saldo"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm mb-1">Saldo Total</p>
+                <p class="text-3xl font-bold text-gray-800" id="saldo-total">R$ 0,00</p>
+                <div class="mt-3 pt-3 border-t border-gray-300">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-500 text-xs" id="taxa-economia">Taxa de economia: 0%</span>
+                        <span class="text-xs text-green-600" id="variacao-saldo">+0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Receitas -->
+            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="200">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="p-3 bg-green-500 bg-opacity-20 rounded-2xl pulse-shadow">
+                        <i data-lucide="trending-up" class="w-6 h-6 text-green-600"></i>
+                    </div>
+                    <span class="text-green-700 text-xs font-semibold bg-green-200 px-3 py-1 rounded-full" id="contador-receitas">+0</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-1">Receitas</p>
+                <p class="text-3xl font-bold text-green-600" id="total-receitas">R$ 0,00</p>
+                <div class="mt-3 pt-3 border-t border-gray-300">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-500 text-xs">Este mês</span>
+                        <div class="flex items-center">
+                            <div class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                            <span class="text-xs text-green-600">Ativo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Despesas -->
+            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="300">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="p-3 bg-red-500 bg-opacity-20 rounded-2xl pulse-shadow">
+                        <i data-lucide="trending-down" class="w-6 h-6 text-red-600"></i>
+                    </div>
+                    <span class="text-red-700 text-xs font-semibold bg-red-200 px-3 py-1 rounded-full" id="contador-despesas">0</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-1">Despesas</p>
+                <p class="text-3xl font-bold text-red-600" id="total-despesas">R$ 0,00</p>
+                <div class="mt-3 pt-3 border-t border-gray-300">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-500 text-xs" id="percentual-despesas">0% da receita</span>
+                        <span class="text-xs text-red-600" id="variacao-despesas">+0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maior Gasto -->
+            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="400">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="p-3 bg-orange-500 bg-opacity-20 rounded-2xl pulse-shadow">
+                        <i data-lucide="target" class="w-6 h-6 text-orange-600"></i>
+                    </div>
+                    <i data-lucide="credit-card" class="w-5 h-5 text-gray-500"></i>
+                </div>
+                <p class="text-gray-600 text-sm mb-1">Maior Gasto</p>
+                <p class="text-3xl font-bold text-orange-600" id="maior-gasto">R$ 0,00</p>
+                <div class="mt-3 pt-3 border-t border-gray-300">
+                    <p class="text-gray-500 text-xs" id="categoria-maior-gasto">Sem gastos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Gráficos -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Gráfico de Pizza - Distribuição de Gastos -->
+            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-right">
+                <div class="flex items-center gap-3 mb-6">
+                    <i data-lucide="pie-chart" class="w-6 h-6 text-gray-700"></i>
+                    <h3 class="text-xl font-bold text-gray-800">Distribuição de Gastos</h3>
+                    <div class="ml-auto">
+                        <button class="text-gray-500 hover:text-gray-700 transition-colors" onclick="toggleChartView('pie')">
+                            <i data-lucide="maximize-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico de Linha - Evolução Temporal -->
+            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-left">
+                <div class="flex items-center gap-3 mb-6">
+                    <i data-lucide="trending-up" class="w-6 h-6 text-gray-700"></i>
+                    <h3 class="text-xl font-bold text-gray-800">Evolução Temporal</h3>
+                    <div class="ml-auto">
+                        <button class="text-gray-500 hover:text-gray-700 transition-colors" onclick="toggleChartView('line')">
+                            <i data-lucide="maximize-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos Adicionais -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Gráfico de Barras - Comparação Mensal -->
+            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="100">
+                <div class="flex items-center gap-3 mb-6">
+                    <i data-lucide="bar-chart-3" class="w-6 h-6 text-gray-700"></i>
+                    <h3 class="text-lg font-bold text-gray-800">Comparação Mensal</h3>
+                </div>
+                <div class="chart-container h-48">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico Radar - Análise de Categorias -->
+            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="200">
+                <div class="flex items-center gap-3 mb-6">
+                    <i data-lucide="activity" class="w-6 h-6 text-gray-700"></i>
+                    <h3 class="text-lg font-bold text-gray-800">Análise por Categoria</h3>
+                </div>
+                <div class="chart-container h-48">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Metas e Progresso -->
+            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="300">
+                <div class="flex items-center gap-3 mb-6">
+                    <i data-lucide="target" class="w-6 h-6 text-gray-700"></i>
+                    <h3 class="text-lg font-bold text-gray-800">Metas Financeiras</h3>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-gray-700 text-sm mb-2">
+                            <span>Meta Economia</span>
+                            <span id="meta-economia-percent">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
+                            <div class="bg-gradient-to-r from-green-400 to-green-600 h-full rounded-full transition-all duration-1000" style="width: 0%" id="progress-economia"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-gray-700 text-sm mb-2">
+                            <span>Controle de Gastos</span>
+                            <span id="meta-gastos-percent">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
+                            <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-full rounded-full transition-all duration-1000" style="width: 0%" id="progress-gastos"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-gray-700 text-sm mb-2">
+                            <span>Diversificação</span>
+                            <span id="meta-diversificacao-percent">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
+                            <div class="bg-gradient-to-r from-purple-400 to-purple-600 h-full rounded-full transition-all duration-1000" style="width: 0%" id="progress-diversificacao"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8" data-aos="zoom-in">
+            <button onclick="abrirModal()" class="glass hover:bg-gray-200 hover:bg-opacity-60 text-gray-800 font-semibold px-8 py-4 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 hover:scale-105 pulse-shadow">
+                <i data-lucide="plus" class="w-6 h-6"></i>
+                Nova Transação
+            </button>
+            <button onclick="exportarDados()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-6 py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-3 hover:scale-105">
+                <i data-lucide="download" class="w-5 h-5"></i>
+                Exportar
+            </button>
+            <button onclick="toggleDarkMode()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-6 py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-3 hover:scale-105">
+                <i data-lucide="moon" class="w-5 h-5" id="theme-icon"></i>
+                Tema
+            </button>
+        </div>
+
+        <!-- Lista de Transações -->
+        <div class="glass rounded-3xl p-6 shadow-2xl" data-aos="fade-up">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Transações Recentes</h2>
+            <div id="lista-transacoes" class="space-y-3">
+                <div class="text-center py-12">
+                    <p class="text-gray-500 text-lg">Nenhuma transação registrada</p>
+                    <p class="text-gray-400 text-sm mt-2">Adicione sua primeira transação</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="glass bg-white bg-opacity-95 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Nova Transação</h3>
+                <button onclick="fecharModal()" class="p-2 hover:bg-gray-200 hover:bg-opacity-50 rounded-full transition-colors">
+                    <i data-lucide="x" class="w-6 h-6 text-gray-600"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="selecionarTipo('income')" id="btn-income" class="p-4 rounded-xl border-2 border-green-500 bg-green-50 transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="trending-up" class="w-5 h-5 text-green-600"></i>
+                            Receita
+                        </button>
+                        <button onclick="selecionarTipo('expense')" id="btn-expense" class="p-4 rounded-xl border-2 border-gray-300 hover:border-red-500 transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="trending-down" class="w-5 h-5 text-red-600"></i>
+                            Despesa
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Valor (R$)</label>
+                    <input type="number" step="0.01" id="valor" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0,00">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                    <select id="categoria" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Selecione uma categoria</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
+                    <input type="text" id="descricao" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Data</label>
+                    <input type="date" id="data" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button onclick="fecharModal()" class="flex-1 px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
+                        Cancelar
+                    </button>
+                    <button onclick="adicionarTransacao()" class="flex-1 px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Adicionar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar ícones Lucide e AOS
+        lucide.createIcons();
+        AOS.init({
+            duration: 800,
+            easing: 'ease-out-cubic'
+        });
+
+        // Dados e gráficos
+        // `transacoes` será carregado do IndexedDB na inicialização
+        let transacoes = [];
+        let tipoSelecionado = 'income';
+        let charts = {};
+        let db; // Dexie DB instance
+
+        // Inicializa IndexedDB via Dexie e migra localStorage se necessário
+        async function initDBandMigrate() {
+            if (typeof Dexie === 'undefined') {
+                console.warn('Dexie não carregado; usando localStorage como fallback');
+                return;
+            }
+
+            db = new Dexie('financeiroDB');
+            db.version(1).stores({ transacoes: 'id,date,type,category,amount' });
+            await db.open();
+
+            // Se DB vazio mas houver dados em localStorage, migrar
+            const count = await db.transacoes.count();
+            const local = JSON.parse(localStorage.getItem('transacoes') || '[]');
+            const migratedFlag = localStorage.getItem('transacoes_migrated');
+            if (count === 0 && Array.isArray(local) && local.length > 0 && !migratedFlag) {
+                try {
+                    await db.transacoes.bulkPut(local);
+                    // marca como migrado para não sobrescrever no futuro
+                    localStorage.setItem('transacoes_migrated', new Date().toISOString());
+                } catch (e) {
+                    console.error('Erro migrando para IndexedDB', e);
+                }
+            }
+        }
+
+        async function loadTransacoesFromDB() {
+            if (db) {
+                // ordenar por id decrescente para manter comportamento atual (unshift)
+                const all = await db.transacoes.orderBy('id').reverse().toArray();
+                transacoes = all || [];
+            } else {
+                transacoes = JSON.parse(localStorage.getItem('transacoes') || '[]');
+            }
+        }
+
+        async function saveTransacaoToDB(transacao) {
+            if (db) {
+                await db.transacoes.put(transacao);
+            } else {
+                // fallback
+                transacoes.unshift(transacao);
+                localStorage.setItem('transacoes', JSON.stringify(transacoes));
+            }
+        }
+
+        async function removeTransacaoFromDB(id) {
+            if (db) {
+                await db.transacoes.delete(id);
+            } else {
+                transacoes = transacoes.filter(t => t.id !== id);
+                localStorage.setItem('transacoes', JSON.stringify(transacoes));
+            }
+        }
+
+        // Configurações dos gráficos
+        const chartConfig = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'rgba(75, 85, 99, 0.8)',
+                        font: { family: 'system-ui' }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    grid: { color: 'rgba(75, 85, 99, 0.1)' },
+                    ticks: { color: 'rgba(75, 85, 99, 0.8)' }
+                },
+                x: {
+                    grid: { color: 'rgba(75, 85, 99, 0.1)' },
+                    ticks: { color: 'rgba(75, 85, 99, 0.8)' }
+                }
+            }
+        };
+
+        // Categorias
+        const categorias = {
+            income: ['Salário', 'Freelance', 'Investimentos', 'Outros'],
+            expense: ['Alimentação', 'Transporte', 'Moradia', 'Lazer', 'Saúde', 'Educação', 'Compras', 'Contas', 'Outros']
+        };
+
+        // Inicializar (agora assíncrono para suportar IndexedDB)
+        document.addEventListener('DOMContentLoaded', async function() {
+            document.getElementById('data').value = new Date().toISOString().split('T')[0];
+            await initDBandMigrate();
+            await loadTransacoesFromDB();
+            atualizarCategorias();
+            atualizarDashboard();
+            criarGraficos();
+            atualizarUltimaAtualizacao();
+            setInterval(atualizarUltimaAtualizacao, 60000); // Atualizar a cada minuto
+        });
+
+        function atualizarUltimaAtualizacao() {
+            const agora = new Date();
+            const formato = agora.toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            document.getElementById('ultimo-update').textContent = `Última atualização: ${formato}`;
+        }
+
+        function criarGraficos() {
+            criarGraficoPizza();
+            criarGraficoLinha();
+            criarGraficoBarras();
+            criarGraficoRadar();
+        }
+
+        function criarGraficoPizza() {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            const categoriasDespesa = {};
+            
+            transacoes.filter(t => t.type === 'expense').forEach(t => {
+                categoriasDespesa[t.category] = (categoriasDespesa[t.category] || 0) + t.amount;
+            });
+
+            const cores = [
+                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
+                '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+            ];
+
+            if (charts.pie) charts.pie.destroy();
+            
+            charts.pie = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                        labels: Object.keys(categoriasDespesa),
+                        datasets: [{
+                        data: Object.values(categoriasDespesa),
+                        backgroundColor: cores.slice(0, Object.keys(categoriasDespesa).length),
+                        borderColor: 'rgba(75, 85, 99, 0.8)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    ...chartConfig,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'rgba(75, 85, 99, 0.8)',
+                                padding: 20,
+                                font: { size: 12 }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        }
+
+        function criarGraficoLinha() {
+            const ctx = document.getElementById('lineChart').getContext('2d');
+            
+            // Dados dos últimos 30 dias
+            const dados = Array.from({length: 30}, (_, i) => {
+                const data = new Date();
+                data.setDate(data.getDate() - (29 - i));
+                const dataStr = data.toISOString().split('T')[0];
+                
+                const receitas = transacoes
+                    .filter(t => t.date === dataStr && t.type === 'income')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                
+                const despesas = transacoes
+                    .filter(t => t.date === dataStr && t.type === 'expense')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                
+                return {
+                    data: data.getDate(),
+                    receitas,
+                    despesas,
+                    saldo: receitas - despesas
+                };
+            });
+
+            if (charts.line) charts.line.destroy();
+            
+            charts.line = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dados.map(d => d.data),
+                    datasets: [
+                        {
+                            label: 'Receitas',
+                            data: dados.map(d => d.receitas),
+                            borderColor: '#22c55e',
+                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Despesas',
+                            data: dados.map(d => d.despesas),
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: chartConfig
+            });
+        }
+
+        function criarGraficoBarras() {
+            const ctx = document.getElementById('barChart').getContext('2d');
+            
+            // Dados dos últimos 6 meses
+            const meses = Array.from({length: 6}, (_, i) => {
+                const data = new Date();
+                data.setMonth(data.getMonth() - (5 - i));
+                return {
+                    nome: data.toLocaleDateString('pt-BR', { month: 'short' }),
+                    mes: data.toISOString().substring(0, 7)
+                };
+            });
+
+            const dadosMeses = meses.map(m => {
+                const receitas = transacoes
+                    .filter(t => t.date.startsWith(m.mes) && t.type === 'income')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                
+                const despesas = transacoes
+                    .filter(t => t.date.startsWith(m.mes) && t.type === 'expense')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                
+                return { nome: m.nome, receitas, despesas };
+            });
+
+            if (charts.bar) charts.bar.destroy();
+            
+            charts.bar = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dadosMeses.map(d => d.nome),
+                    datasets: [
+                        {
+                            label: 'Receitas',
+                            data: dadosMeses.map(d => d.receitas),
+                            backgroundColor: 'rgba(34, 197, 94, 0.8)'
+                        },
+                        {
+                            label: 'Despesas',
+                            data: dadosMeses.map(d => d.despesas),
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)'
+                        }
+                    ]
+                },
+                options: chartConfig
+            });
+        }
+
+        function criarGraficoRadar() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            const categorias = ['Alimentação', 'Transporte', 'Moradia', 'Lazer', 'Saúde'];
+            const dados = categorias.map(cat => {
+                return transacoes
+                    .filter(t => t.category === cat && t.type === 'expense')
+                    .reduce((sum, t) => sum + t.amount, 0);
+            });
+
+            if (charts.radar) charts.radar.destroy();
+            
+            charts.radar = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: categorias,
+                    datasets: [{
+                        label: 'Gastos por Categoria',
+                        data: dados,
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(75, 85, 99, 0.8)'
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            grid: { color: 'rgba(75, 85, 99, 0.1)' },
+                            ticks: { color: 'rgba(75, 85, 99, 0.8)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function exportarDados() {
+            let all = transacoes;
+            if (db) {
+                all = await db.transacoes.toArray();
+            }
+
+            const dados = {
+                transacoes: all,
+                resumo: {
+                    totalReceitas: all.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0),
+                    totalDespesas: all.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0),
+                    totalTransacoes: all.length
+                }
+            };
+
+            const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `financeiro_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function toggleDarkMode() {
+            // Implementação do modo escuro - placeholder
+            console.log('Modo escuro - funcionalidade futura');
+        }
+
+        function toggleChartView(tipo) {
+            // Implementação para expandir gráfico - placeholder
+            console.log('Expandir gráfico:', tipo);
+        }
+
+        function abrirModal() {
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function fecharModal() {
+            document.getElementById('modal').classList.add('hidden');
+            limparFormulario();
+        }
+
+        function selecionarTipo(tipo) {
+            tipoSelecionado = tipo;
+            
+            // Atualizar botões
+            document.getElementById('btn-income').className = tipo === 'income' 
+                ? 'p-4 rounded-xl border-2 border-green-500 bg-green-50 transition-all flex items-center justify-center gap-2'
+                : 'p-4 rounded-xl border-2 border-gray-300 hover:border-green-500 transition-all flex items-center justify-center gap-2';
+            
+            document.getElementById('btn-expense').className = tipo === 'expense' 
+                ? 'p-4 rounded-xl border-2 border-red-500 bg-red-50 transition-all flex items-center justify-center gap-2'
+                : 'p-4 rounded-xl border-2 border-gray-300 hover:border-red-500 transition-all flex items-center justify-center gap-2';
+            
+            atualizarCategorias();
+        }
+
+        function atualizarCategorias() {
+            const select = document.getElementById('categoria');
+            select.innerHTML = '<option value="">Selecione uma categoria</option>';
+            
+            categorias[tipoSelecionado].forEach(categoria => {
+                const option = document.createElement('option');
+                option.value = categoria;
+                option.textContent = categoria;
+                select.appendChild(option);
+            });
+        }
+
+        async function adicionarTransacao() {
+            const valor = parseFloat(document.getElementById('valor').value);
+            const categoria = document.getElementById('categoria').value;
+            const descricao = document.getElementById('descricao').value;
+            const data = document.getElementById('data').value;
+
+            if (!valor || !categoria) {
+                alert('Preencha o valor e a categoria');
+                return;
+            }
+
+            const transacao = {
+                id: Date.now(),
+                type: tipoSelecionado,
+                amount: valor,
+                category: categoria,
+                description: descricao,
+                date: data
+            };
+
+            // salvar no DB (ou fallback localStorage)
+            await saveTransacaoToDB(transacao);
+            // atualizar array em memória para UI imediata
+            transacoes.unshift(transacao);
+
+            atualizarDashboard();
+            fecharModal();
+        }
+
+        async function removerTransacao(id) {
+            await removeTransacaoFromDB(id);
+            transacoes = transacoes.filter(t => t.id !== id);
+            atualizarDashboard();
+        }
+
+        function limparFormulario() {
+            document.getElementById('valor').value = '';
+            document.getElementById('categoria').value = '';
+            document.getElementById('descricao').value = '';
+            document.getElementById('data').value = new Date().toISOString().split('T')[0];
+            selecionarTipo('income');
+        }
+
+        function atualizarDashboard() {
+            const receitas = transacoes.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+            const despesas = transacoes.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+            const saldo = receitas - despesas;
+
+            // Atualizar cards principais
+            document.getElementById('saldo-total').textContent = `R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            document.getElementById('total-receitas').textContent = `R$ ${receitas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            document.getElementById('total-despesas').textContent = `R$ ${despesas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            
+            // Contadores
+            const qtdReceitas = transacoes.filter(t => t.type === 'income').length;
+            const qtdDespesas = transacoes.filter(t => t.type === 'expense').length;
+            document.getElementById('contador-receitas').textContent = `+${qtdReceitas}`;
+            document.getElementById('contador-despesas').textContent = `${qtdDespesas}`;
+
+            // Taxa de economia
+            const taxaEconomia = receitas > 0 ? ((saldo / receitas) * 100).toFixed(1) : 0;
+            document.getElementById('taxa-economia').textContent = `Taxa de economia: ${taxaEconomia}%`;
+
+            // Percentual de despesas
+            const percentualDespesas = receitas > 0 ? ((despesas / receitas) * 100).toFixed(1) : 0;
+            document.getElementById('percentual-despesas').textContent = `${percentualDespesas}% da receita`;
+
+            // Maior gasto
+            const maioresGastos = transacoes.filter(t => t.type === 'expense').sort((a, b) => b.amount - a.amount);
+            if (maioresGastos.length > 0) {
+                const maiorGasto = maioresGastos[0];
+                document.getElementById('maior-gasto').textContent = `R$ ${maiorGasto.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                document.getElementById('categoria-maior-gasto').textContent = maiorGasto.category;
+            } else {
+                document.getElementById('maior-gasto').textContent = 'R$ 0,00';
+                document.getElementById('categoria-maior-gasto').textContent = 'Sem gastos';
+            }
+
+            // Atualizar métricas rápidas
+            atualizarMetricasRapidas();
+
+            // Atualizar cor do saldo
+            const saldoElement = document.getElementById('saldo-total');
+            saldoElement.className = saldo >= 0 ? 'text-3xl font-bold text-gray-800' : 'text-3xl font-bold text-red-600';
+
+            // Atualizar lista de transações
+            atualizarListaTransacoes();
+            
+            // Atualizar gráficos
+            if (Object.keys(charts).length > 0) {
+                criarGraficos();
+            }
+        }
+
+        function atualizarMetricasRapidas() {
+            const receitas = transacoes.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+            const despesas = transacoes.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+            const saldo = receitas - despesas;
+
+            // Meta de economia
+            const metaEconomia = receitas > 0 ? Math.min(100, (saldo / receitas) * 100) : 0;
+            document.getElementById('meta-economia').textContent = `${metaEconomia.toFixed(0)}%`;
+            
+            // Atualizar círculo de progresso
+            const circunferencia = 2 * Math.PI * 18;
+            const offset = circunferencia - (metaEconomia / 100) * circunferencia;
+            document.getElementById('meta-progress').style.strokeDashoffset = offset;
+
+            // Dias consecutivos sem gastos
+            let diasConsecutivos = 0;
+            const hoje = new Date();
+            for (let i = 0; i < 30; i++) {
+                const data = new Date(hoje);
+                data.setDate(hoje.getDate() - i);
+                const dataStr = data.toISOString().split('T')[0];
+                
+                const temGasto = transacoes.some(t => t.date === dataStr && t.type === 'expense');
+                if (temGasto) break;
+                diasConsecutivos++;
+            }
+            document.getElementById('dias-consecutivos').textContent = diasConsecutivos;
+
+            // Média diária de gastos
+            const diasComTransacao = new Set(transacoes.map(t => t.date)).size;
+            const mediaDiaria = diasComTransacao > 0 ? despesas / diasComTransacao : 0;
+            document.getElementById('media-diaria').textContent = `R$ ${mediaDiaria.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`;
+
+            // Projeção do mês
+            const diaAtual = new Date().getDate();
+            const diasNoMes = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+            const projecaoMes = (despesas / diaAtual) * diasNoMes;
+            document.getElementById('projecao-mes').textContent = `R$ ${projecaoMes.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`;
+
+            // Atualizar barras de progresso das metas
+            document.getElementById('meta-economia-percent').textContent = `${metaEconomia.toFixed(0)}%`;
+            document.getElementById('progress-economia').style.width = `${metaEconomia}%`;
+
+            const controleGastos = receitas > 0 ? Math.min(100, 100 - (despesas / receitas) * 100) : 100;
+            document.getElementById('meta-gastos-percent').textContent = `${controleGastos.toFixed(0)}%`;
+            document.getElementById('progress-gastos').style.width = `${controleGastos}%`;
+
+            const categorias = new Set(transacoes.filter(t => t.type === 'expense').map(t => t.category));
+            const diversificacao = Math.min(100, (categorias.size / 8) * 100);
+            document.getElementById('meta-diversificacao-percent').textContent = `${diversificacao.toFixed(0)}%`;
+            document.getElementById('progress-diversificacao').style.width = `${diversificacao}%`;
+        }
+
+        function atualizarListaTransacoes() {
+            const container = document.getElementById('lista-transacoes');
+            
+            if (transacoes.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <p class="text-black text-opacity-60 text-lg">Nenhuma transação registrada</p>
+                        <p class="text-black text-opacity-40 text-sm mt-2">Adicione sua primeira transação</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = transacoes.slice(0, 10).map(transacao => `
+                <div class="glass bg-white bg-opacity-20 rounded-2xl p-4 border border-white border-opacity-20 hover:bg-white hover:bg-opacity-25 transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4 flex-1">
+                            <div class="p-3 rounded-xl ${transacao.type === 'income' ? 'bg-green-400 bg-opacity-30' : 'bg-red-400 bg-opacity-30'}">
+                                <i data-lucide="${transacao.type === 'income' ? 'trending-up' : 'trending-down'}" class="w-5 h-5 text-black"></i>
+                            </div>
+                            
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-xl">${getCategoryIcon(transacao.category)}</span>
+                                    <p class="font-semibold text-black">${transacao.category}</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-black text-opacity-60 text-sm">${transacao.description || 'Sem descrição'}</p>
+                                    <span class="text-black text-opacity-40">•</span>
+                                    <p class="text-black text-opacity-50 text-sm">
+                                        ${new Date(transacao.date + 'T00:00:00').toLocaleDateString('pt-BR')}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4">
+                            <p class="text-xl font-bold ${transacao.type === 'income' ? 'text-green-200' : 'text-red-200'}">
+                                ${transacao.type === 'income' ? '+' : '-'} R$ ${transacao.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </p>
+                            <button onclick="removerTransacao(${transacao.id})" class="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors">
+                                <i data-lucide="trash-2" class="w-4 h-4 text-black text-opacity-60 hover:text-red-300"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Reinicializar ícones após atualizar o DOM
+            lucide.createIcons();
+        }
+
+        function getCategoryIcon(category) {
+            const icons = {
+                'Alimentação': '🍽️',
+                'Transporte': '🚗',
+                'Moradia': '🏠',
+                'Lazer': '🎮',
+                'Saúde': '💊',
+                'Educação': '📚',
+                'Compras': '🛍️',
+                'Contas': '📄',
+                'Salário': '💰',
+                'Freelance': '💻',
+                'Investimentos': '📈',
+                'Outros': '📦'
+            };
+            return icons[category] || '📦';
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                fecharModal();
+            }
+        });
+    </script>
+</body>
+</html>
