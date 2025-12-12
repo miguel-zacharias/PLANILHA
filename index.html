@@ -12,12 +12,19 @@
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
         .gradient-bg {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%);
+            min-height: 100vh;
         }
         /* Cor padrão do texto (permite que classes de utilitário sobrescrevam cores específicas) */
         body {
             color: #000000;
+            margin: 0;
+            padding: 0;
         }
         .glass {
             background: rgba(255, 255, 255, 0.25);
@@ -64,31 +71,74 @@
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
+        
+        /* Responsividade Mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem !important;
+            }
+            
+            h1 {
+                font-size: 2rem !important;
+                line-height: 1.2 !important;
+            }
+            
+            h2 {
+                font-size: 1.5rem !important;
+            }
+            
+            h3 {
+                font-size: 1rem !important;
+            }
+            
+            p {
+                font-size: 0.875rem !important;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .container {
+                padding: 0.75rem !important;
+            }
+            
+            h1 {
+                font-size: 1.5rem !important;
+                margin-bottom: 0.75rem !important;
+            }
+            
+            h2 {
+                font-size: 1.25rem !important;
+            }
+            
+            .chart-container {
+                height: 250px !important;
+            }
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen">
-    <div class="container mx-auto p-8 relative">
-        <!-- Controles neutros (canto superior direito) -->
-        <div class="absolute top-6 right-6 flex gap-2 z-50">
-            <button onclick="renameUsername()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-100">Renomear</button>
-            <button onclick="deleteAllData()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-100">Excluir dados</button>
+    <div class="container mx-auto p-8 relative" style="max-width: 100%;">
+        <!-- Controles neutros (canto superior) - Responsivo -->
+        <div class="flex flex-col sm:flex-row gap-2 z-50 mb-6 justify-center sm:justify-end flex-wrap">
+            <button onclick="renameUsername()" class="px-3 py-2 border border-gray-300 rounded-lg text-xs sm:text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">Renomear</button>
+            <button onclick="deleteAllData()" class="px-3 py-2 border border-gray-300 rounded-lg text-xs sm:text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">Excluir dados</button>
         </div>
         <!-- Header -->
         <div class="text-center mb-8" data-aos="fade-down">
-            <h1 class="text-5xl md:text-6xl font-bold text-gray-800 mb-3 floating">Bem-Vindo ao seu Dashboard Financeiro.</h1>
-            <p class="text-gray-600 text-lg">Bem-Vindo ao seu Dashboard Financeiro com análise completa de suas finanças</p>
-            <div class="mt-4 flex justify-center">
-                <div class="pulse-shadow bg-gray-200 bg-opacity-50 rounded-full px-6 py-2">
-                    <span class="text-gray-700 text-sm font-medium" id="ultimo-update">Última atualização: agora</span>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-3 floating" style="line-height: 1.2;">Bem-Vindo ao seu Dashboard Financeiro.</h1>
+            <p class="text-gray-600 text-sm sm:text-base md:text-lg px-2">Bem-Vindo ao seu Dashboard Financeiro com análise completa de suas finanças</p>
+            <div class="mt-4 flex justify-center px-2">
+                <div class="pulse-shadow bg-gray-200 bg-opacity-50 rounded-full px-4 sm:px-6 py-2">
+                    <span class="text-gray-700 text-xs sm:text-sm font-medium" id="ultimo-update">Última atualização: agora</span>
                 </div>
             </div>
         </div>
 
         <!-- Métricas Rápidas -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="glass rounded-2xl p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="100">
-                <div class="text-2xl font-bold text-gray-800" id="meta-economia">20%</div>
-                <div class="text-gray-600 text-sm">Meta Economia</div>
+        <div class="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 md:grid-cols-4 mb-8">
+            <div class="glass rounded-lg sm:rounded-2xl p-3 sm:p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="100">
+                <div class="text-xl sm:text-2xl font-bold text-gray-800" id="meta-economia">20%</div>
+                <div class="text-gray-600 text-xs sm:text-sm">Meta Economia</div>
                 <div class="mt-2">
                     <svg class="progress-ring w-12 h-12 mx-auto">
                         <circle class="progress-ring-circle" stroke="rgba(255,255,255,0.3)" stroke-width="3" fill="transparent" r="18" cx="24" cy="24"/>
@@ -96,27 +146,27 @@
                     </svg>
                 </div>
             </div>
-            <div class="glass rounded-2xl p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="200">
-                <div class="text-2xl font-bold text-gray-800" id="dias-consecutivos">0</div>
-                <div class="text-gray-600 text-sm">Dias sem gastos</div>
-                <div class="text-3xl mt-1">🔥</div>
+            <div class="glass rounded-lg sm:rounded-2xl p-3 sm:p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="200">
+                <div class="text-xl sm:text-2xl font-bold text-gray-800" id="dias-consecutivos">0</div>
+                <div class="text-gray-600 text-xs sm:text-sm">Dias sem gastos</div>
+                <div class="text-2xl sm:text-3xl mt-1">🔥</div>
             </div>
-            <div class="glass rounded-2xl p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="300">
-                <div class="text-2xl font-bold text-gray-800" id="media-diaria">R$ 0</div>
-                <div class="text-gray-600 text-sm">Média Diária</div>
-                <div class="text-3xl mt-1">📊</div>
+            <div class="glass rounded-lg sm:rounded-2xl p-3 sm:p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="300">
+                <div class="text-xl sm:text-2xl font-bold text-gray-800" id="media-diaria">R$ 0</div>
+                <div class="text-gray-600 text-xs sm:text-sm">Média Diária</div>
+                <div class="text-2xl sm:text-3xl mt-1">📊</div>
             </div>
-            <div class="glass rounded-2xl p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="400">
-                <div class="text-2xl font-bold text-gray-800" id="projecao-mes">R$ 0</div>
-                <div class="text-gray-600 text-sm">Projeção Mês</div>
-                <div class="text-3xl mt-1">🎯</div>
+            <div class="glass rounded-lg sm:rounded-2xl p-3 sm:p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="400">
+                <div class="text-xl sm:text-2xl font-bold text-gray-800" id="projecao-mes">R$ 0</div>
+                <div class="text-gray-600 text-xs sm:text-sm">Projeção Mês</div>
+                <div class="text-2xl sm:text-3xl mt-1">🎯</div>
             </div>
         </div>
 
         <!-- Cards Principais -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
             <!-- Saldo Total -->
-            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="100">
+            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="100">
                 <div class="flex items-center justify-between mb-3">
                     <div class="p-3 bg-blue-500 bg-opacity-20 rounded-2xl pulse-shadow">
                         <i data-lucide="wallet" class="w-6 h-6 text-blue-600"></i>
@@ -127,10 +177,10 @@
                         </svg>
                     </div>
                 </div>
-                <p class="text-gray-600 text-sm mb-1">Saldo Total</p>
-                <p class="text-3xl font-bold text-gray-800" id="saldo-total">R$ 0,00</p>
+                <p class="text-gray-600 text-xs sm:text-sm mb-1">Saldo Total</p>
+                <p class="text-2xl sm:text-3xl font-bold text-gray-800" id="saldo-total">R$ 0,00</p>
                 <div class="mt-3 pt-3 border-t border-gray-300">
-                    <div class="flex items-center justify-between">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1">
                         <span class="text-gray-500 text-xs" id="taxa-economia">Taxa de economia: 0%</span>
                         <span class="text-xs text-green-600" id="variacao-saldo">+0%</span>
                     </div>
@@ -138,17 +188,17 @@
             </div>
 
             <!-- Receitas -->
-            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="200">
+            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="200">
                 <div class="flex items-center justify-between mb-3">
                     <div class="p-3 bg-green-500 bg-opacity-20 rounded-2xl pulse-shadow">
                         <i data-lucide="trending-up" class="w-6 h-6 text-green-600"></i>
                     </div>
                     <span class="text-green-700 text-xs font-semibold bg-green-200 px-3 py-1 rounded-full" id="contador-receitas">+0</span>
                 </div>
-                <p class="text-gray-600 text-sm mb-1">Receitas</p>
-                <p class="text-3xl font-bold text-green-600" id="total-receitas">R$ 0,00</p>
+                <p class="text-gray-600 text-xs sm:text-sm mb-1">Receitas</p>
+                <p class="text-2xl sm:text-3xl font-bold text-green-600" id="total-receitas">R$ 0,00</p>
                 <div class="mt-3 pt-3 border-t border-gray-300">
-                    <div class="flex items-center justify-between">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1">
                         <span class="text-gray-500 text-xs">Este mês</span>
                         <div class="flex items-center">
                             <div class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
@@ -159,17 +209,17 @@
             </div>
 
             <!-- Despesas -->
-            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="300">
+            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="300">
                 <div class="flex items-center justify-between mb-3">
                     <div class="p-3 bg-red-500 bg-opacity-20 rounded-2xl pulse-shadow">
                         <i data-lucide="trending-down" class="w-6 h-6 text-red-600"></i>
                     </div>
                     <span class="text-red-700 text-xs font-semibold bg-red-200 px-3 py-1 rounded-full" id="contador-despesas">0</span>
                 </div>
-                <p class="text-gray-600 text-sm mb-1">Despesas</p>
-                <p class="text-3xl font-bold text-red-600" id="total-despesas">R$ 0,00</p>
+                <p class="text-gray-600 text-xs sm:text-sm mb-1">Despesas</p>
+                <p class="text-2xl sm:text-3xl font-bold text-red-600" id="total-despesas">R$ 0,00</p>
                 <div class="mt-3 pt-3 border-t border-gray-300">
-                    <div class="flex items-center justify-between">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1">
                         <span class="text-gray-500 text-xs" id="percentual-despesas">0% da receita</span>
                         <span class="text-xs text-red-600" id="variacao-despesas">+0%</span>
                     </div>
@@ -177,15 +227,15 @@
             </div>
 
             <!-- Maior Gasto -->
-            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="400">
+            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="400">
                 <div class="flex items-center justify-between mb-3">
                     <div class="p-3 bg-orange-500 bg-opacity-20 rounded-2xl pulse-shadow">
                         <i data-lucide="target" class="w-6 h-6 text-orange-600"></i>
                     </div>
                     <i data-lucide="credit-card" class="w-5 h-5 text-gray-500"></i>
                 </div>
-                <p class="text-gray-600 text-sm mb-1">Maior Gasto</p>
-                <p class="text-3xl font-bold text-orange-600" id="maior-gasto">R$ 0,00</p>
+                <p class="text-gray-600 text-xs sm:text-sm mb-1">Maior Gasto</p>
+                <p class="text-2xl sm:text-3xl font-bold text-orange-600" id="maior-gasto">R$ 0,00</p>
                 <div class="mt-3 pt-3 border-t border-gray-300">
                     <p class="text-gray-500 text-xs" id="categoria-maior-gasto">Sem gastos</p>
                 </div>
@@ -193,12 +243,12 @@
         </div>
 
         <!-- Seção de Gráficos -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8">
             <!-- Gráfico de Pizza - Distribuição de Gastos -->
-            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-right">
-                <div class="flex items-center gap-3 mb-6">
-                    <i data-lucide="pie-chart" class="w-6 h-6 text-gray-700"></i>
-                    <h3 class="text-xl font-bold text-gray-800">Distribuição de Gastos</h3>
+            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-right">
+                <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
+                    <i data-lucide="pie-chart" class="w-5 sm:w-6 h-5 sm:h-6 text-gray-700"></i>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">Distribuição de Gastos</h3>
                     <div class="ml-auto">
                         <button class="text-gray-500 hover:text-gray-700 transition-colors" onclick="toggleChartView('pie')">
                             <i data-lucide="maximize-2" class="w-5 h-5"></i>
@@ -211,10 +261,10 @@
             </div>
 
             <!-- Gráfico de Linha - Evolução Temporal -->
-            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-left">
-                <div class="flex items-center gap-3 mb-6">
-                    <i data-lucide="trending-up" class="w-6 h-6 text-gray-700"></i>
-                    <h3 class="text-xl font-bold text-gray-800">Evolução Temporal</h3>
+            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-left">
+                <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
+                    <i data-lucide="trending-up" class="w-5 sm:w-6 h-5 sm:h-6 text-gray-700"></i>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">Evolução Temporal</h3>
                     <div class="ml-auto">
                         <button class="text-gray-500 hover:text-gray-700 transition-colors" onclick="toggleChartView('line')">
                             <i data-lucide="maximize-2" class="w-5 h-5"></i>
@@ -228,12 +278,12 @@
         </div>
 
         <!-- Gráficos Adicionais -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
             <!-- Gráfico de Barras - Comparação Mensal -->
-            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="100">
-                <div class="flex items-center gap-3 mb-6">
-                    <i data-lucide="bar-chart-3" class="w-6 h-6 text-gray-700"></i>
-                    <h3 class="text-lg font-bold text-gray-800">Comparação Mensal</h3>
+            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="100">
+                <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
+                    <i data-lucide="bar-chart-3" class="w-5 sm:w-6 h-5 sm:h-6 text-gray-700"></i>
+                    <h3 class="text-base sm:text-lg font-bold text-gray-800">Comparação Mensal</h3>
                 </div>
                 <div class="chart-container h-48">
                     <canvas id="barChart"></canvas>
@@ -241,10 +291,10 @@
             </div>
 
             <!-- Gráfico Radar - Análise de Categorias -->
-            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="200">
-                <div class="flex items-center gap-3 mb-6">
-                    <i data-lucide="activity" class="w-6 h-6 text-gray-700"></i>
-                    <h3 class="text-lg font-bold text-gray-800">Análise por Categoria</h3>
+            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="200">
+                <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
+                    <i data-lucide="activity" class="w-5 sm:w-6 h-5 sm:h-6 text-gray-700"></i>
+                    <h3 class="text-base sm:text-lg font-bold text-gray-800">Análise por Categoria</h3>
                 </div>
                 <div class="chart-container h-48">
                     <canvas id="radarChart"></canvas>
@@ -252,14 +302,14 @@
             </div>
 
             <!-- Metas e Progresso -->
-            <div class="glass rounded-3xl p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="300">
-                <div class="flex items-center gap-3 mb-6">
-                    <i data-lucide="target" class="w-6 h-6 text-gray-700"></i>
-                    <h3 class="text-lg font-bold text-gray-800">Metas Financeiras</h3>
+            <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="300">
+                <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
+                    <i data-lucide="target" class="w-5 sm:w-6 h-5 sm:h-6 text-gray-700"></i>
+                    <h3 class="text-base sm:text-lg font-bold text-gray-800">Metas Financeiras</h3>
                 </div>
                 <div class="space-y-4">
                     <div>
-                        <div class="flex justify-between text-gray-700 text-sm mb-2">
+                        <div class="flex justify-between text-gray-700 text-xs sm:text-sm mb-2">
                             <span>Meta Economia</span>
                             <span id="meta-economia-percent">0%</span>
                         </div>
@@ -268,7 +318,7 @@
                         </div>
                     </div>
                     <div>
-                        <div class="flex justify-between text-gray-700 text-sm mb-2">
+                        <div class="flex justify-between text-gray-700 text-xs sm:text-sm mb-2">
                             <span>Controle de Gastos</span>
                             <span id="meta-gastos-percent">0%</span>
                         </div>
@@ -277,7 +327,7 @@
                         </div>
                     </div>
                     <div>
-                        <div class="flex justify-between text-gray-700 text-sm mb-2">
+                        <div class="flex justify-between text-gray-700 text-xs sm:text-sm mb-2">
                             <span>Diversificação</span>
                             <span id="meta-diversificacao-percent">0%</span>
                         </div>
@@ -290,28 +340,28 @@
         </div>
 
         <!-- Botões de Ação -->
-        <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8" data-aos="zoom-in">
-            <button onclick="abrirModal()" class="glass hover:bg-gray-200 hover:bg-opacity-60 text-gray-800 font-semibold px-8 py-4 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 hover:scale-105 pulse-shadow">
-                <i data-lucide="plus" class="w-6 h-6"></i>
+        <div class="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 mb-8 px-2" data-aos="zoom-in">
+            <button onclick="abrirModal()" class="glass hover:bg-gray-200 hover:bg-opacity-60 text-gray-800 font-semibold px-4 sm:px-8 py-3 sm:py-4 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 pulse-shadow text-sm sm:text-base">
+                <i data-lucide="plus" class="w-5 sm:w-6 h-5 sm:h-6"></i>
                 Nova Transação
             </button>
-            <button onclick="exportarDados()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-6 py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-3 hover:scale-105">
-                <i data-lucide="download" class="w-5 h-5"></i>
+            <button onclick="exportarDados()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-4 sm:px-6 py-3 sm:py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 text-sm sm:text-base">
+                <i data-lucide="download" class="w-5 sm:w-5 h-5 sm:h-5"></i>
                 Exportar
             </button>
-            <button onclick="toggleDarkMode()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-6 py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-3 hover:scale-105">
-                <i data-lucide="moon" class="w-5 h-5" id="theme-icon"></i>
+            <button onclick="toggleDarkMode()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-4 sm:px-6 py-3 sm:py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 text-sm sm:text-base">
+                <i data-lucide="moon" class="w-5 sm:w-5 h-5 sm:h-5" id="theme-icon"></i>
                 Tema
             </button>
         </div>
 
         <!-- Lista de Transações -->
-        <div class="glass rounded-3xl p-6 shadow-2xl" data-aos="fade-up">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Transações Recentes</h2>
+        <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl" data-aos="fade-up">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">Transações Recentes</h2>
             <div id="lista-transacoes" class="space-y-3">
-                <div class="text-center py-12">
-                    <p class="text-gray-500 text-lg">Nenhuma transação registrada</p>
-                    <p class="text-gray-400 text-sm mt-2">Adicione sua primeira transação</p>
+                <div class="text-center py-8 sm:py-12 px-2">
+                    <p class="text-gray-500 text-base sm:text-lg">Nenhuma transação registrada</p>
+                    <p class="text-gray-400 text-xs sm:text-sm mt-2">Adicione sua primeira transação</p>
                 </div>
             </div>
         </div>
@@ -319,56 +369,56 @@
 
     <!-- Modal -->
     <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
-        <div class="glass bg-white bg-opacity-95 rounded-3xl p-8 max-w-md w-full shadow-2xl">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-gray-800">Nova Transação</h3>
+        <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl p-4 sm:p-8 max-w-md w-full shadow-2xl">
+            <div class="flex justify-between items-center mb-4 sm:mb-6">
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800">Nova Transação</h3>
                 <button onclick="fecharModal()" class="p-2 hover:bg-gray-200 hover:bg-opacity-50 rounded-full transition-colors">
-                    <i data-lucide="x" class="w-6 h-6 text-gray-600"></i>
+                    <i data-lucide="x" class="w-5 sm:w-6 h-5 sm:h-6 text-gray-600"></i>
                 </button>
             </div>
 
-            <div class="space-y-4">
+            <div class="space-y-3 sm:space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="selecionarTipo('income')" id="btn-income" class="p-4 rounded-xl border-2 border-green-500 bg-green-50 transition-all flex items-center justify-center gap-2">
-                            <i data-lucide="trending-up" class="w-5 h-5 text-green-600"></i>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Tipo</label>
+                    <div class="grid grid-cols-2 gap-2 sm:gap-3">
+                        <button onclick="selecionarTipo('income')" id="btn-income" class="p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 border-green-500 bg-green-50 transition-all flex items-center justify-center gap-2 text-sm">
+                            <i data-lucide="trending-up" class="w-4 sm:w-5 h-4 sm:h-5 text-green-600"></i>
                             Receita
                         </button>
-                        <button onclick="selecionarTipo('expense')" id="btn-expense" class="p-4 rounded-xl border-2 border-gray-300 hover:border-red-500 transition-all flex items-center justify-center gap-2">
-                            <i data-lucide="trending-down" class="w-5 h-5 text-red-600"></i>
+                        <button onclick="selecionarTipo('expense')" id="btn-expense" class="p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 border-gray-300 hover:border-red-500 transition-all flex items-center justify-center gap-2 text-sm">
+                            <i data-lucide="trending-down" class="w-4 sm:w-5 h-4 sm:h-5 text-red-600"></i>
                             Despesa
                         </button>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Valor (R$)</label>
-                    <input type="number" step="0.01" id="valor" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0,00">
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Valor (R$)</label>
+                    <input type="number" step="0.01" id="valor" class="w-full p-2 sm:p-3 border border-gray-300 rounded-lg sm:rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0,00">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
-                    <select id="categoria" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                    <select id="categoria" class="w-full p-2 sm:p-3 border border-gray-300 rounded-lg sm:rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Selecione uma categoria</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
-                    <input type="text" id="descricao" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Descrição</label>
+                    <input type="text" id="descricao" class="w-full p-2 sm:p-3 border border-gray-300 rounded-lg sm:rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Data</label>
-                    <input type="date" id="data" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Data</label>
+                    <input type="date" id="data" class="w-full p-2 sm:p-3 border border-gray-300 rounded-lg sm:rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
-                <div class="flex gap-3 pt-4">
-                    <button onclick="fecharModal()" class="flex-1 px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
+                <div class="flex gap-2 sm:gap-3 pt-3 sm:pt-4">
+                    <button onclick="fecharModal()" class="flex-1 px-4 sm:px-6 py-2 sm:py-3 text-sm border border-gray-300 rounded-lg sm:rounded-xl hover:bg-gray-50 transition-colors">
                         Cancelar
                     </button>
-                    <button onclick="adicionarTransacao()" class="flex-1 px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors">
+                    <button onclick="adicionarTransacao()" class="flex-1 px-4 sm:px-6 py-2 sm:py-3 text-sm bg-blue-500 text-white rounded-lg sm:rounded-xl hover:bg-blue-600 transition-colors">
                         Adicionar
                     </button>
                 </div>
@@ -378,15 +428,15 @@
 
     <!-- Modal Nome do Usuário -->
     <div id="name-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
-        <div class="glass bg-white bg-opacity-95 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+        <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl p-4 sm:p-8 max-w-md w-full shadow-2xl">
             <div class="mb-4">
-                <h3 class="text-xl font-bold text-gray-800">Como prefere ser chamado?</h3>
+                <h3 class="text-lg sm:text-xl font-bold text-gray-800">Como prefere ser chamado?</h3>
             </div>
-            <div class="space-y-4">
-                <input id="username-input" type="text" class="w-full p-3 border border-gray-300 rounded-xl" placeholder="Seu nome">
-                <div class="flex gap-3 justify-end">
-                    <button onclick="skipName()" class="px-4 py-2 border rounded-xl">Pular</button>
-                    <button onclick="saveNameFromModal()" class="px-4 py-2 bg-blue-500 text-white rounded-xl">Salvar</button>
+            <div class="space-y-3 sm:space-y-4">
+                <input id="username-input" type="text" class="w-full p-2 sm:p-3 border border-gray-300 rounded-lg sm:rounded-xl text-sm" placeholder="Seu nome">
+                <div class="flex gap-2 sm:gap-3 justify-end">
+                    <button onclick="skipName()" class="px-3 sm:px-4 py-2 text-sm border rounded-lg sm:rounded-xl hover:bg-gray-50 transition-colors">Pular</button>
+                    <button onclick="saveNameFromModal()" class="px-3 sm:px-4 py-2 text-sm bg-blue-500 text-white rounded-lg sm:rounded-xl hover:bg-blue-600 transition-colors">Salvar</button>
                 </div>
             </div>
         </div>
@@ -1116,8 +1166,8 @@
 </script>
 
     <!-- Rodapé -->
-    <footer class="w-full mt-12 py-6 bg-transparent text-center">
-        <p class="text-sm text-gray-700">MGV Group — Todos os direitos reservados, 2025</p>
+    <footer class="w-full mt-8 sm:mt-12 py-4 sm:py-6 bg-transparent text-center px-2">
+        <p class="text-xs sm:text-sm text-gray-700">MGV Group — Todos os direitos reservados, 2025</p>
     </footer>
 </body>
 </html>
