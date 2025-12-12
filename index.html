@@ -393,7 +393,9 @@
             }
 
             db = new Dexie('financeiroDB');
+            // versão 1: transacoes, versão 2: adiciona store `app` para configurações (ex.: username)
             db.version(1).stores({ transacoes: 'id,date,type,category,amount' });
+            db.version(2).stores({ transacoes: 'id,date,type,category,amount', app: 'key' });
             await db.open();
 
             // Se DB vazio mas houver dados em localStorage, migrar
@@ -418,6 +420,30 @@
                 transacoes = all || [];
             } else {
                 transacoes = JSON.parse(localStorage.getItem('transacoes') || '[]');
+            }
+        }
+
+        // Usuario (nome) helpers
+        async function getSavedUsername() {
+            if (!db) return localStorage.getItem('username') || null;
+            try {
+                const rec = await db.app.get('username');
+                return rec ? rec.value : null;
+            } catch (e) {
+                console.error('Erro lendo username do DB', e);
+                return null;
+            }
+        }
+
+        async function saveUsername(name) {
+            if (!db) {
+                localStorage.setItem('username', name);
+                return;
+            }
+            try {
+                await db.app.put({ key: 'username', value: name });
+            } catch (e) {
+                console.error('Erro salvando username no DB', e);
             }
         }
 
