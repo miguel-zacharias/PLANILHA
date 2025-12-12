@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MFluxControl Dashboard</title>
+    <title>MGV - FluxControl Dashboard</title>
     <link rel="icon" href="./media/MGV-art.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
@@ -1242,13 +1242,144 @@
                 `xmlns:x="urn:schemas-microsoft-com:office:excel" ` +
                 `xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n`;
 
-            // Estilos: cabeçalho em negrito
-            const styles = `
-  <Styles>
-    <Style ss:ID="Header">
-      <Font ss:Bold="1"/>
-    </Style>
-  </Styles>\n`;
+                        // Estilos: cabeçalho em negrito, sombreamento de linhas, formatos de moeda/data, wrap e cores por tipo
+                        // Estilos avançados (fornecidos pelo usuário)
+                        const styles = `
+    <Styles>
+        <!-- Título Principal -->
+        <Style ss:ID="Title">
+            <Font ss:Bold="1" ss:Size="18" ss:Color="#1e3a8a"/>
+            <Alignment ss:Horizontal="Left" ss:Vertical="Center"/>
+            <Interior ss:Color="#dbeafe" ss:Pattern="Solid"/>
+            <Borders>
+                <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#3b82f6"/>
+            </Borders>
+        </Style>
+        
+        <!-- Cabeçalho da Tabela -->
+        <Style ss:ID="Header">
+            <Font ss:Bold="1" ss:Size="11" ss:Color="#FFFFFF"/>
+            <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+            <Interior ss:Color="#3b82f6" ss:Pattern="Solid"/>
+            <Borders>
+                <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#1e40af"/>
+                <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#60a5fa"/>
+                <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#60a5fa"/>
+            </Borders>
+        </Style>
+        
+        <!-- Tipo: Entrada (Verde) -->
+        <Style ss:ID="Income">
+            <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+            <Interior ss:Color="#22c55e" ss:Pattern="Solid"/>
+            <Font ss:Color="#FFFFFF" ss:Bold="1" ss:Size="10"/>
+            <Borders>
+                <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+            </Borders>
+        </Style>
+        
+        <!-- Tipo: Saída (Vermelho) -->
+        <Style ss:ID="Expense">
+            <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+            <Interior ss:Color="#ef4444" ss:Pattern="Solid"/>
+            <Font ss:Color="#FFFFFF" ss:Bold="1" ss:Size="10"/>
+            <Borders>
+                <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+            </Borders>
+        </Style>
+        
+        <!-- Moeda: Entrada -->
+        <Style ss:ID="CurrencyPos">
+            <Alignment ss:Horizontal="Right" ss:Vertical="Center"/>
+            <NumberFormat ss:Format="_(&quot;R$&quot;\ * #,##0.00_);_(&quot;R$&quot;\ * \(#,##0.00\);_(&quot;R$&quot;\ * &quot;-&quot;??_);_(@_)"/>
+            <Interior ss:Color="#dcfce7" ss:Pattern="Solid"/>
+            <Font ss:Bold="1" ss:Color="#166534" ss:Size="10"/>
+            <Borders>
+                <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+            </Borders>
+        </Style>
+        
+        <!-- Moeda: Saída -->
+        <Style ss:ID="CurrencyNeg">
+            <Alignment ss:Horizontal="Right" ss:Vertical="Center"/>
+            <NumberFormat ss:Format="_(&quot;R$&quot;\ * #,##0.00_);_(&quot;R$&quot;\ * \(#,##0.00\);_(&quot;R$&quot;\ * &quot;-&quot;??_);_(@_)"/>
+            <Interior ss:Color="#fee2e2" ss:Pattern="Solid"/>
+            <Font ss:Bold="1" ss:Color="#991b1b" ss:Size="10"/>
+            <Borders>
+                <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+            </Borders>
+        </Style>
+        
+        <!-- Categoria -->
+        <Style ss:ID="Category">
+            <Alignment ss:Horizontal="Left" ss:Vertical="Center"/>
+            <Interior ss:Color="#f3f4f6" ss:Pattern="Solid"/>
+            <Font ss:Size="10" ss:Color="#374151"/>
+            <Borders>
+                <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+            </Borders>
+        </Style>
+        
+        <!-- Descrição (com wrap) -->
+        <Style ss:ID="Description">
+            <Alignment ss:WrapText="1" ss:Vertical="Top" ss:Horizontal="Left"/>
+            <Font ss:Size="9" ss:Color="#6b7280"/>
+            <Interior ss:Color="#fafafa" ss:Pattern="Solid"/>
+            <Borders>
+                <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+            </Borders>
+        </Style>
+        
+        <!-- Data -->
+        <Style ss:ID="Date">
+            <NumberFormat ss:Format="dd/mm/yyyy"/>
+            <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+            <Font ss:Size="10" ss:Color="#374151"/>
+            <Interior ss:Color="#f9fafb" ss:Pattern="Solid"/>
+            <Borders>
+                <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+                <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#e5e7eb"/>
+            </Borders>
+        </Style>
+        
+        <!-- Linha de Resumo/Total -->
+        <Style ss:ID="SummaryLabel">
+            <Font ss:Bold="1" ss:Size="11" ss:Color="#1f2937"/>
+            <Alignment ss:Horizontal="Right" ss:Vertical="Center"/>
+            <Interior ss:Color="#e5e7eb" ss:Pattern="Solid"/>
+            <Borders>
+                <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#9ca3af"/>
+            </Borders>
+        </Style>
+        
+        <Style ss:ID="SummaryValue">
+            <Font ss:Bold="1" ss:Size="11" ss:Color="#1f2937"/>
+            <NumberFormat ss:Format="_(&quot;R$&quot;\ * #,##0.00_);_(&quot;R$&quot;\ * \(#,##0.00\);_(&quot;R$&quot;\ * &quot;-&quot;??_);_(@_)"/>
+            <Alignment ss:Horizontal="Right" ss:Vertical="Center"/>
+            <Interior ss:Color="#e5e7eb" ss:Pattern="Solid"/>
+            <Borders>
+                <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#9ca3af"/>
+            </Borders>
+        </Style>
+        
+        <!-- Linha Alternada -->
+        <Style ss:ID="EvenRow">
+            <Interior ss:Color="#f8fafc" ss:Pattern="Solid"/>
+        </Style>
+    </Styles>\n`;
 
             // Colunas padrão (sem id para legibilidade)
             const cols = options.includeId ? ['id','type','amount','category','description','date'] : ['type','amount','category','description','date'];
@@ -1274,21 +1405,77 @@
             });
             xml += '  </Row>\n';
 
-            // data rows
-            items.forEach(i => {
-                xml += '  <Row>\n';
-                const values = options.includeId ? [String(i.id || ''), i.type || '', i.amount, i.category || '', i.description || '', i.date || ''] : [i.type || '', i.amount, i.category || '', i.description || '', i.date || ''];
-                values.forEach((val, idx) => {
-                    // amount (when in second column for includeId false, or third when includeId true)
-                    const amountIndex = options.includeId ? 2 : 1;
-                    if (idx === amountIndex && val !== '' && !isNaN(Number(val))) {
-                        xml += `    <Cell><Data ss:Type="Number">${Number(val)}</Data></Cell>\n`;
+            // data rows (com formatação, cores por tipo e linhas alternadas)
+            items.forEach((i, rowIdx) => {
+                const rowStyle = (rowIdx % 2 === 1) ? ' ss:StyleID="EvenRow"' : '';
+                xml += `  <Row${rowStyle}>\n`;
+                // iterar pelas colunas definidas em `cols` para manter ordem
+                cols.forEach((colName, idx) => {
+                    const raw = (i && i[colName] !== undefined && i[colName] !== null) ? i[colName] : '';
+                    // identificar tipo da linha (se presente)
+                    const rowType = i && i.type ? i.type : null;
+
+                    // lógica para cada coluna
+                    if (colName === 'type') {
+                        const display = (raw === 'income') ? 'ENTRADA' : (raw === 'expense') ? 'SAÍDA' : escapeXml(String(raw));
+                        const styleId = (raw === 'income') ? 'Income' : (raw === 'expense') ? 'Expense' : null;
+                        if (styleId) xml += `    <Cell ss:StyleID="${styleId}"><Data ss:Type="String">${escapeXml(display)}</Data></Cell>\n`;
+                        else xml += `    <Cell><Data ss:Type="String">${escapeXml(display)}</Data></Cell>\n`;
+                    } else if (colName === 'amount') {
+                        if (raw !== '' && !isNaN(Number(raw))) {
+                            const currencyStyle = (rowType === 'income') ? 'CurrencyPos' : 'CurrencyNeg';
+                            xml += `    <Cell ss:StyleID="${currencyStyle}"><Data ss:Type="Number">${Number(raw)}</Data></Cell>\n`;
+                        } else {
+                            xml += `    <Cell><Data ss:Type="String">${escapeXml(String(raw))}</Data></Cell>\n`;
+                        }
+                    } else if (colName === 'date') {
+                        let dateIso = '';
+                        try {
+                            const d = new Date(raw);
+                            if (!isNaN(d.getTime())) dateIso = d.toISOString();
+                        } catch (e) { dateIso = ''; }
+                        if (dateIso) {
+                            xml += `    <Cell ss:StyleID="Date"><Data ss:Type="DateTime">${dateIso}</Data></Cell>\n`;
+                        } else {
+                            xml += `    <Cell><Data ss:Type="String">${escapeXml(String(raw))}</Data></Cell>\n`;
+                        }
+                    } else if (colName === 'description') {
+                        xml += `    <Cell ss:StyleID="Description"><Data ss:Type="String">${escapeXml(String(raw))}</Data></Cell>\n`;
                     } else {
-                        xml += `    <Cell><Data ss:Type="String">${escapeXml(String(val))}</Data></Cell>\n`;
+                        // generic
+                        xml += `    <Cell><Data ss:Type="String">${escapeXml(String(raw))}</Data></Cell>\n`;
                     }
                 });
                 xml += '  </Row>\n';
             });
+
+            // Totais: Receitas, Despesas e Saldo
+            const totalReceitas = items.filter(t => t.type === 'income').reduce((s, t) => s + (Number(t.amount) || 0), 0);
+            const totalDespesas = items.filter(t => t.type === 'expense').reduce((s, t) => s + (Number(t.amount) || 0), 0);
+            const saldo = totalReceitas - totalDespesas;
+            const mergeAcross = Math.max(0, cols.length - 2);
+
+            // Linha em branco espaçadora
+            xml += '  <Row></Row>\n';
+
+            // Total Receitas
+            xml += '  <Row>\n';
+            xml += `    <Cell ss:StyleID="SummaryLabel" ss:MergeAcross="${mergeAcross}"><Data ss:Type="String">Total Receitas</Data></Cell>\n`;
+            xml += `    <Cell ss:StyleID="SummaryValue"><Data ss:Type="Number">${Number(totalReceitas)}</Data></Cell>\n`;
+            xml += '  </Row>\n';
+
+            // Total Despesas
+            xml += '  <Row>\n';
+            xml += `    <Cell ss:StyleID="SummaryLabel" ss:MergeAcross="${mergeAcross}"><Data ss:Type="String">Total Despesas</Data></Cell>\n`;
+            xml += `    <Cell ss:StyleID="SummaryValue"><Data ss:Type="Number">${Number(totalDespesas)}</Data></Cell>\n`;
+            xml += '  </Row>\n';
+
+            // Saldo (usar cor positiva/negativa)
+            xml += '  <Row>\n';
+            xml += `    <Cell ss:StyleID="SummaryLabel" ss:MergeAcross="${mergeAcross}"><Data ss:Type="String">Saldo</Data></Cell>\n`;
+            const saldoStyle = (saldo >= 0) ? 'CurrencyPos' : 'CurrencyNeg';
+            xml += `    <Cell ss:StyleID="${saldoStyle}"><Data ss:Type="Number">${Number(saldo)}</Data></Cell>\n`;
+            xml += '  </Row>\n';
 
             xml += `</Table>\n</Worksheet>\n</Workbook>`;
             return xml;
