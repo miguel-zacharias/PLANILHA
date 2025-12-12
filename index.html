@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FluxControl Dashboard</title>
+    <title>MFluxControl Dashboard</title>
     <link rel="icon" href="./media/MGV-art.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
@@ -237,6 +237,38 @@
                 gap: 1rem !important;
             }
         }
+
+        /* Export menu visual */
+        .export-menu {
+            position: absolute;
+            min-width: 160px;
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+            background: white;
+            z-index: 2147483647;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .export-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 160ms, transform 120ms;
+            user-select: none;
+        }
+        .export-option:hover { transform: translateY(-2px); }
+        .export-option .dot { width:12px;height:12px;border-radius:3px;flex-shrink:0 }
+        .export-csv:hover { background: rgba(59,130,246,0.06); }
+        .export-csv .dot { background: #3b82f6 }
+        .export-xml:hover { background: rgba(16,185,129,0.06); }
+        .export-xml .dot { background: #10b981 }
+        .export-json:hover { background: rgba(156,163,175,0.06); }
+        .export-json .dot { background: #9ca3af }
     </style>
 </head>
     <body class="gradient-bg min-h-screen">
@@ -486,7 +518,7 @@
                 <i data-lucide="plus" class="w-4 sm:w-6 h-4 sm:h-6"></i>
                 Nova Transação
             </button>
-            <button onclick="exportarDados()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-3 sm:px-6 py-2 sm:py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 text-xs sm:text-base">
+            <button id="export-btn" onclick="showExportMenu(event)" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-3 sm:px-6 py-2 sm:py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 text-xs sm:text-base">
                 <i data-lucide="download" class="w-4 sm:w-5 h-4 sm:h-5"></i>
                 Exportar
             </button>
@@ -1133,12 +1165,35 @@
             });
         }
 
-        async function exportarDados() {
+        // Exportar dados em CSV, XML ou JSON (planilha).
+        async function exportarDados(format = 'json') {
             let all = transacoes;
             if (db) {
                 all = await db.transacoes.toArray();
             }
 
+            const dateTag = new Date().toISOString().split('T')[0];
+            if (format === 'csv') {
+                const csv = createCSV(all);
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a'); a.href = url;
+                a.download = `financeiro_${dateTag}.csv`;
+                a.click(); URL.revokeObjectURL(url);
+                return;
+            }
+
+            if (format === 'xml') {
+                const xml = createXML(all);
+                const blob = new Blob([xml], { type: 'application/xml;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a'); a.href = url;
+                a.download = `financeiro_${dateTag}.xml`;
+                a.click(); URL.revokeObjectURL(url);
+                return;
+            }
+
+            // default: json (inclui resumo)
             const dados = {
                 transacoes: all,
                 resumo: {
@@ -1152,9 +1207,116 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `financeiro_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `financeiro_${dateTag}.json`;
             a.click();
             URL.revokeObjectURL(url);
+        }
+
+        function sanitizeCSVField(value) {
+            if (value === null || value === undefined) return '';
+            const s = String(value);
+            // escape double quotes
+            if (s.includes('"') || s.includes(',') || s.includes('\n') || s.includes('\r')) {
+                return '"' + s.replace(/"/g, '""') + '"';
+            }
+            return s;
+        }
+
+        function createCSV(items) {
+            const headers = ['id','type','amount','category','description','date'];
+            const rows = items.map(i => headers.map(h => sanitizeCSVField(i[h])).join(','));
+            return headers.join(',') + '\n' + rows.join('\n');
+        }
+
+        function escapeForCdata(str) {
+            // Garantir string e dividir ocorrências de ']]>' para não quebrar CDATA
+            return String(str || '').replace(/]]>/g, ']]]]><![CDATA[>');
+        }
+
+        function createXML(items, options = { includeId: false }) {
+            // Gerar SpreadsheetML (XML compatível com Excel) para abrir como tabela
+            // options.includeId: se true inclui coluna `id`; por padrão false para melhor legibilidade
+            const header = `<?xml version="1.0" encoding="UTF-8"?>\n` +
+                `<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" ` +
+                `xmlns:o="urn:schemas-microsoft-com:office:office" ` +
+                `xmlns:x="urn:schemas-microsoft-com:office:excel" ` +
+                `xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n`;
+
+            // Estilos: cabeçalho em negrito
+            const styles = `
+  <Styles>
+    <Style ss:ID="Header">
+      <Font ss:Bold="1"/>
+    </Style>
+  </Styles>\n`;
+
+            // Colunas padrão (sem id para legibilidade)
+            const cols = options.includeId ? ['id','type','amount','category','description','date'] : ['type','amount','category','description','date'];
+
+            // definir larguras (aprox. pixels)
+            const colWidths = options.includeId ? [110,100,80,120,260,90] : [100,80,120,260,90];
+
+            let xml = header + styles;
+            xml += `<Worksheet ss:Name="Transacoes">\n<Table>\n`;
+
+            // Columns with widths
+            colWidths.forEach(w => {
+                xml += `  <Column ss:Width="${w}"/>\n`;
+            });
+
+            // header row (com estilo)
+            xml += '  <Row>\n';
+            cols.forEach(h => {
+                // human-friendly labels
+                const labelMap = { type: 'Tipo', amount: 'Valor', category: 'Categoria', description: 'Descrição', date: 'Data', id: 'ID' };
+                const label = labelMap[h] || h;
+                xml += `    <Cell ss:StyleID="Header"><Data ss:Type="String">${escapeXml(label)}</Data></Cell>\n`;
+            });
+            xml += '  </Row>\n';
+
+            // data rows
+            items.forEach(i => {
+                xml += '  <Row>\n';
+                const values = options.includeId ? [String(i.id || ''), i.type || '', i.amount, i.category || '', i.description || '', i.date || ''] : [i.type || '', i.amount, i.category || '', i.description || '', i.date || ''];
+                values.forEach((val, idx) => {
+                    // amount (when in second column for includeId false, or third when includeId true)
+                    const amountIndex = options.includeId ? 2 : 1;
+                    if (idx === amountIndex && val !== '' && !isNaN(Number(val))) {
+                        xml += `    <Cell><Data ss:Type="Number">${Number(val)}</Data></Cell>\n`;
+                    } else {
+                        xml += `    <Cell><Data ss:Type="String">${escapeXml(String(val))}</Data></Cell>\n`;
+                    }
+                });
+                xml += '  </Row>\n';
+            });
+
+            xml += `</Table>\n</Worksheet>\n</Workbook>`;
+            return xml;
+        }
+
+        function escapeXml(unsafe) {
+            if (unsafe === null || unsafe === undefined) return '';
+            return String(unsafe).replace(/[<>&\"']/g, function (c) {
+                switch (c) {
+                    case '<': return '&lt;';
+                    case '>': return '&gt;';
+                    case '&': return '&amp;';
+                    case '"': return '&quot;';
+                    case "'": return '&apos;';
+                }
+            });
+        }
+
+        // UI helper: pergunta ao usuário qual formato deseja exportar
+        function exportarDadosPrompt() {
+            const choice = prompt('Escolha formato de exportação: csv, xml ou json', 'csv');
+            if (!choice) return;
+            const fmt = choice.trim().toLowerCase();
+            if (!['csv','xml','json'].includes(fmt)) {
+                alert('Formato inválido. Use csv, xml ou json.');
+                return;
+            }
+            exportarDados(fmt);
         }
 
         function toggleDarkMode() {
@@ -1453,7 +1615,7 @@
                         </div>
                         
                         <div class="flex items-center gap-2 flex-shrink-0">
-                            <p class="text-sm sm:text-lg font-bold whitespace-nowrap ${transacao.type === 'income' ? 'text-green-200' : 'text-red-200'}">
+                            <p class="text-sm sm:text-lg font-bold whitespace-nowrap relative ${transacao.type === 'income' ? 'text-green-600' : 'text-red-600'}" style="z-index:12;">
                                 ${transacao.type === 'income' ? '+' : '-'} R$ ${transacao.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                             </p>
                             <button onclick="removerTransacao(${transacao.id})" class="p-1 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors flex-shrink-0">
@@ -1701,6 +1863,67 @@
             // checar sempre que houver mudanças relevantes (atualizar também ao salvar/remover)
             setInterval(checkUpcomingRecorrentes, 1000 * 60 * 60); // cada 1h
         })();
+
+        // --- Menu visual para exportar ---
+        let __exportMenuEl = null;
+        function showExportMenu(e) {
+            e.stopPropagation();
+            const btn = document.getElementById('export-btn');
+            if (!btn) return;
+            // se já existe, remover
+            if (__exportMenuEl) { __exportMenuEl.remove(); __exportMenuEl = null; return; }
+
+            const menu = document.createElement('div');
+            menu.className = 'export-menu';
+
+            const optCsv = document.createElement('div'); optCsv.className = 'export-option export-csv';
+            optCsv.innerHTML = '<div class="dot"></div><div><strong>CSV</strong><div style="font-size:12px;color:#6b7280">Planilha (separado por vírgula)</div></div>';
+            optCsv.addEventListener('click', () => { exportarDados('csv'); closeExportMenu(); });
+
+            const optXml = document.createElement('div'); optXml.className = 'export-option export-xml';
+            optXml.innerHTML = '<div class="dot"></div><div><strong>XML</strong><div style="font-size:12px;color:#6b7280">Dados em formato XML</div></div>';
+            optXml.addEventListener('click', () => { exportarDados('xml'); closeExportMenu(); });
+
+            const optJson = document.createElement('div'); optJson.className = 'export-option export-json';
+            optJson.innerHTML = '<div class="dot"></div><div><strong>JSON</strong><div style="font-size:12px;color:#6b7280">Arquivo JSON (resumo incluso)</div></div>';
+            optJson.addEventListener('click', () => { exportarDados('json'); closeExportMenu(); });
+
+            menu.appendChild(optCsv);
+            menu.appendChild(optXml);
+            menu.appendChild(optJson);
+
+            document.body.appendChild(menu);
+            __exportMenuEl = menu;
+
+            // posicionar próximo ao botão
+            const rect = btn.getBoundingClientRect();
+            const top = rect.bottom + 8 + window.scrollY;
+            const right = window.innerWidth - rect.right + 8;
+            menu.style.top = `${top}px`;
+            menu.style.left = `${rect.right - menu.offsetWidth}px`;
+            // ajustar se ultrapassar a viewport
+            const menuRect = menu.getBoundingClientRect();
+            if (menuRect.right > window.innerWidth - 8) {
+                menu.style.left = `${window.innerWidth - menuRect.width - 8}px`;
+            }
+
+            // fechar ao clicar fora
+            setTimeout(() => {
+                document.addEventListener('click', __closeExportOnOutside);
+            }, 0);
+        }
+
+        function __closeExportOnOutside(ev) {
+            if (!__exportMenuEl) return;
+            if (!__exportMenuEl.contains(ev.target) && ev.target.id !== 'export-btn') {
+                closeExportMenu();
+            }
+        }
+
+        function closeExportMenu() {
+            if (__exportMenuEl) { __exportMenuEl.remove(); __exportMenuEl = null; }
+            document.removeEventListener('click', __closeExportOnOutside);
+        }
     </script>
 </script>
 
