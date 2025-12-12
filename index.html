@@ -113,6 +113,77 @@
             .chart-container {
                 height: 250px !important;
             }
+            
+            .glass {
+                padding: 0.75rem !important;
+            }
+            
+            button {
+                font-size: 0.75rem !important;
+                padding: 0.5rem !important;
+            }
+            
+            i[data-lucide] {
+                width: 1rem !important;
+                height: 1rem !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.5rem !important;
+            }
+            
+            h1 {
+                font-size: 1.25rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            h2 {
+                font-size: 1rem !important;
+            }
+            
+            h3 {
+                font-size: 0.875rem !important;
+            }
+            
+            p, span, label {
+                font-size: 0.75rem !important;
+            }
+            
+            .chart-container {
+                height: 200px !important;
+            }
+            
+            .glass {
+                padding: 0.5rem !important;
+                border-radius: 0.5rem !important;
+            }
+            
+            button {
+                padding: 0.375rem 0.75rem !important;
+            }
+            
+            i[data-lucide] {
+                width: 0.875rem !important;
+                height: 0.875rem !important;
+            }
+            
+            .grid {
+                gap: 0.5rem !important;
+            }
+            
+            .gap-2 {
+                gap: 0.375rem !important;
+            }
+            
+            .gap-3 {
+                gap: 0.5rem !important;
+            }
+            
+            .gap-4 {
+                gap: 0.75rem !important;
+            }
         }
     </style>
 </head>
@@ -167,12 +238,12 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
             <!-- Saldo Total -->
             <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="100">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="p-3 bg-blue-500 bg-opacity-20 rounded-2xl pulse-shadow">
-                        <i data-lucide="wallet" class="w-6 h-6 text-blue-600"></i>
+            <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                    <div class="p-2 sm:p-3 bg-blue-500 bg-opacity-20 rounded-xl sm:rounded-2xl pulse-shadow">
+                        <i data-lucide="wallet" class="w-4 sm:w-6 h-4 sm:h-6 text-blue-600"></i>
                     </div>
-                    <div class="text-right">
-                        <svg class="w-16 h-8 sparkline" viewBox="0 0 100 30">
+                    <div class="text-right overflow-hidden">
+                        <svg class="w-12 sm:w-16 h-6 sm:h-8 sparkline" viewBox="0 0 100 30">
                             <polyline class="sparkline" stroke="#60a5fa" points="0,20 20,15 40,25 60,10 80,18 100,12" id="sparkline-saldo"/>
                         </svg>
                     </div>
@@ -189,11 +260,11 @@
 
             <!-- Receitas -->
             <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="200">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="p-3 bg-green-500 bg-opacity-20 rounded-2xl pulse-shadow">
-                        <i data-lucide="trending-up" class="w-6 h-6 text-green-600"></i>
+                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                    <div class="p-2 sm:p-3 bg-green-500 bg-opacity-20 rounded-xl sm:rounded-2xl pulse-shadow">
+                        <i data-lucide="trending-up" class="w-4 sm:w-6 h-4 sm:h-6 text-green-600"></i>
                     </div>
-                    <span class="text-green-700 text-xs font-semibold bg-green-200 px-3 py-1 rounded-full" id="contador-receitas">+0</span>
+                    <span class="text-green-700 text-xs font-semibold bg-green-200 px-2 sm:px-3 py-1 rounded-full text-ellipsis overflow-hidden" id="contador-receitas">+0</span>
                 </div>
                 <p class="text-gray-600 text-xs sm:text-sm mb-1">Receitas</p>
                 <p class="text-2xl sm:text-3xl font-bold text-green-600" id="total-receitas">R$ 0,00</p>
@@ -210,11 +281,11 @@
 
             <!-- Despesas -->
             <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="300">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="p-3 bg-red-500 bg-opacity-20 rounded-2xl pulse-shadow">
-                        <i data-lucide="trending-down" class="w-6 h-6 text-red-600"></i>
+                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                    <div class="p-2 sm:p-3 bg-red-500 bg-opacity-20 rounded-xl sm:rounded-2xl pulse-shadow">
+                        <i data-lucide="trending-down" class="w-4 sm:w-6 h-4 sm:h-6 text-red-600"></i>
                     </div>
-                    <span class="text-red-700 text-xs font-semibold bg-red-200 px-3 py-1 rounded-full" id="contador-despesas">0</span>
+                    <span class="text-red-700 text-xs font-semibold bg-red-200 px-2 sm:px-3 py-1 rounded-full text-ellipsis overflow-hidden" id="contador-despesas">0</span>
                 </div>
                 <p class="text-gray-600 text-xs sm:text-sm mb-1">Despesas</p>
                 <p class="text-2xl sm:text-3xl font-bold text-red-600" id="total-despesas">R$ 0,00</p>
@@ -228,11 +299,11 @@
 
             <!-- Maior Gasto -->
             <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="400">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="p-3 bg-orange-500 bg-opacity-20 rounded-2xl pulse-shadow">
-                        <i data-lucide="target" class="w-6 h-6 text-orange-600"></i>
+                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                    <div class="p-2 sm:p-3 bg-orange-500 bg-opacity-20 rounded-xl sm:rounded-2xl pulse-shadow">
+                        <i data-lucide="target" class="w-4 sm:w-6 h-4 sm:h-6 text-orange-600"></i>
                     </div>
-                    <i data-lucide="credit-card" class="w-5 h-5 text-gray-500"></i>
+                    <i data-lucide="credit-card" class="w-4 sm:w-5 h-4 sm:h-5 text-gray-500"></i>
                 </div>
                 <p class="text-gray-600 text-xs sm:text-sm mb-1">Maior Gasto</p>
                 <p class="text-2xl sm:text-3xl font-bold text-orange-600" id="maior-gasto">R$ 0,00</p>
@@ -368,16 +439,16 @@
     </div>
 
     <!-- Modal -->
-    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
-        <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl p-4 sm:p-8 max-w-md w-full shadow-2xl">
-            <div class="flex justify-between items-center mb-4 sm:mb-6">
-                <h3 class="text-xl sm:text-2xl font-bold text-gray-800">Nova Transação</h3>
-                <button onclick="fecharModal()" class="p-2 hover:bg-gray-200 hover:bg-opacity-50 rounded-full transition-colors">
-                    <i data-lucide="x" class="w-5 sm:w-6 h-5 sm:h-6 text-gray-600"></i>
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50 hidden">
+        <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl p-4 sm:p-8 w-full max-h-[90vh] overflow-y-auto shadow-2xl" style="max-width: 28rem;">
+            <div class="flex justify-between items-start sm:items-center mb-4 sm:mb-6 sticky top-0 bg-white bg-opacity-95 p-2 -m-4 sm:-m-8 sm:p-4 sm:mb-4">
+                <h3 class="text-lg sm:text-2xl font-bold text-gray-800 flex-1 pr-2">Nova Transação</h3>
+                <button onclick="fecharModal()" class="p-2 hover:bg-gray-200 hover:bg-opacity-50 rounded-full transition-colors flex-shrink-0">
+                    <i data-lucide="x" class="w-4 sm:w-6 h-4 sm:h-6 text-gray-600"></i>
                 </button>
             </div>
 
-            <div class="space-y-3 sm:space-y-4">
+            <div class="space-y-2 sm:space-y-4">
                 <div>
                     <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Tipo</label>
                     <div class="grid grid-cols-2 gap-2 sm:gap-3">
@@ -427,16 +498,16 @@
     </div>
 
     <!-- Modal Nome do Usuário -->
-    <div id="name-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
-        <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl p-4 sm:p-8 max-w-md w-full shadow-2xl">
+    <div id="name-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50 hidden">
+        <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl p-4 sm:p-8 w-full max-h-[90vh] overflow-y-auto shadow-2xl" style="max-width: 28rem;">
             <div class="mb-4">
-                <h3 class="text-lg sm:text-xl font-bold text-gray-800">Como prefere ser chamado?</h3>
+                <h3 class="text-base sm:text-xl font-bold text-gray-800">Como prefere ser chamado?</h3>
             </div>
-            <div class="space-y-3 sm:space-y-4">
+            <div class="space-y-2 sm:space-y-4">
                 <input id="username-input" type="text" class="w-full p-2 sm:p-3 border border-gray-300 rounded-lg sm:rounded-xl text-sm" placeholder="Seu nome">
                 <div class="flex gap-2 sm:gap-3 justify-end">
-                    <button onclick="skipName()" class="px-3 sm:px-4 py-2 text-sm border rounded-lg sm:rounded-xl hover:bg-gray-50 transition-colors">Pular</button>
-                    <button onclick="saveNameFromModal()" class="px-3 sm:px-4 py-2 text-sm bg-blue-500 text-white rounded-lg sm:rounded-xl hover:bg-blue-600 transition-colors">Salvar</button>
+                    <button onclick="skipName()" class="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm border rounded-lg sm:rounded-xl hover:bg-gray-50 transition-colors">Pular</button>
+                    <button onclick="saveNameFromModal()" class="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm bg-blue-500 text-white rounded-lg sm:rounded-xl hover:bg-blue-600 transition-colors">Salvar</button>
                 </div>
             </div>
         </div>
@@ -860,12 +931,12 @@
             
             // Atualizar botões
             document.getElementById('btn-income').className = tipo === 'income' 
-                ? 'p-4 rounded-xl border-2 border-green-500 bg-green-50 transition-all flex items-center justify-center gap-2'
-                : 'p-4 rounded-xl border-2 border-gray-300 hover:border-green-500 transition-all flex items-center justify-center gap-2';
+                ? 'p-2 sm:p-4 rounded-lg sm:rounded-xl border-2 border-green-500 bg-green-50 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm'
+                : 'p-2 sm:p-4 rounded-lg sm:rounded-xl border-2 border-gray-300 hover:border-green-500 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm';
             
             document.getElementById('btn-expense').className = tipo === 'expense' 
-                ? 'p-4 rounded-xl border-2 border-red-500 bg-red-50 transition-all flex items-center justify-center gap-2'
-                : 'p-4 rounded-xl border-2 border-gray-300 hover:border-red-500 transition-all flex items-center justify-center gap-2';
+                ? 'p-2 sm:p-4 rounded-lg sm:rounded-xl border-2 border-red-500 bg-red-50 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm'
+                : 'p-2 sm:p-4 rounded-lg sm:rounded-xl border-2 border-gray-300 hover:border-red-500 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm';
             
             atualizarCategorias();
         }
@@ -1091,43 +1162,43 @@
             
             if (transacoes.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center py-12">
-                        <p class="text-black text-opacity-60 text-lg">Nenhuma transação registrada</p>
-                        <p class="text-black text-opacity-40 text-sm mt-2">Adicione sua primeira transação</p>
+                    <div class="text-center py-8 sm:py-12 px-2">
+                        <p class="text-gray-500 text-base sm:text-lg">Nenhuma transação registrada</p>
+                        <p class="text-gray-400 text-xs sm:text-sm mt-2">Adicione sua primeira transação</p>
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = transacoes.slice(0, 10).map(transacao => `
-                <div class="glass bg-white bg-opacity-20 rounded-2xl p-4 border border-white border-opacity-20 hover:bg-white hover:bg-opacity-25 transition-all duration-300">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-4 flex-1">
-                            <div class="p-3 rounded-xl ${transacao.type === 'income' ? 'bg-green-400 bg-opacity-30' : 'bg-red-400 bg-opacity-30'}">
-                                <i data-lucide="${transacao.type === 'income' ? 'trending-up' : 'trending-down'}" class="w-5 h-5 text-black"></i>
+                <div class="glass bg-white bg-opacity-20 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white border-opacity-20 hover:bg-white hover:bg-opacity-25 transition-all duration-300 overflow-hidden">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3">
+                        <div class="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                            <div class="p-2 rounded-lg flex-shrink-0 ${transacao.type === 'income' ? 'bg-green-400 bg-opacity-30' : 'bg-red-400 bg-opacity-30'}">
+                                <i data-lucide="${transacao.type === 'income' ? 'trending-up' : 'trending-down'}" class="w-4 h-4 text-black"></i>
                             </div>
                             
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="text-xl">${getCategoryIcon(transacao.category)}</span>
-                                    <p class="font-semibold text-black">${transacao.category}</p>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-1 mb-1 flex-wrap">
+                                    <span class="text-lg">${getCategoryIcon(transacao.category)}</span>
+                                    <p class="font-semibold text-black text-sm truncate">${transacao.category}</p>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <p class="text-black text-opacity-60 text-sm">${transacao.description || 'Sem descrição'}</p>
-                                    <span class="text-black text-opacity-40">•</span>
-                                    <p class="text-black text-opacity-50 text-sm">
+                                <div class="flex items-center gap-1 flex-wrap">
+                                    <p class="text-black text-opacity-60 text-xs truncate">${transacao.description || 'Sem descrição'}</p>
+                                    <span class="text-black text-opacity-40 text-xs">•</span>
+                                    <p class="text-black text-opacity-50 text-xs whitespace-nowrap">
                                         ${new Date(transacao.date + 'T00:00:00').toLocaleDateString('pt-BR')}
                                     </p>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="flex items-center gap-4">
-                            <p class="text-xl font-bold ${transacao.type === 'income' ? 'text-green-200' : 'text-red-200'}">
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <p class="text-sm sm:text-lg font-bold whitespace-nowrap ${transacao.type === 'income' ? 'text-green-200' : 'text-red-200'}">
                                 ${transacao.type === 'income' ? '+' : '-'} R$ ${transacao.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                             </p>
-                            <button onclick="removerTransacao(${transacao.id})" class="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors">
-                                <i data-lucide="trash-2" class="w-4 h-4 text-black text-opacity-60 hover:text-red-300"></i>
+                            <button onclick="removerTransacao(${transacao.id})" class="p-1 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors flex-shrink-0">
+                                <i data-lucide="trash-2" class="w-3 h-3 text-black text-opacity-60 hover:text-red-300"></i>
                             </button>
                         </div>
                     </div>
