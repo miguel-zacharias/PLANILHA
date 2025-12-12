@@ -210,25 +210,25 @@
     </style>
 </head>
 <body class="gradient-bg min-h-screen">
-    <div class="container mx-auto p-8 relative" style="max-width: 100%;">
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 relative" style="max-width: 100%;">
         <!-- Controles neutros (canto superior) - Responsivo -->
-        <div class="flex flex-col sm:flex-row gap-2 z-50 mb-6 justify-center sm:justify-end flex-wrap">
-            <button onclick="renameUsername()" class="px-3 py-2 border border-gray-300 rounded-lg text-xs sm:text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">Renomear</button>
-            <button onclick="deleteAllData()" class="px-3 py-2 border border-gray-300 rounded-lg text-xs sm:text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">Excluir dados</button>
+        <div class="flex flex-row gap-2 sm:gap-3 z-50 mb-4 sm:mb-6 justify-center sm:justify-end flex-wrap">
+            <button onclick="renameUsername()" class="px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">Renomear</button>
+            <button onclick="deleteAllData()" class="px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">Excluir dados</button>
         </div>
         <!-- Header -->
-        <div class="text-center mb-8" data-aos="fade-down">
+        <div class="text-center mb-6 sm:mb-8" data-aos="fade-down">
             <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-3 floating" style="line-height: 1.2;">Bem-Vindo ao seu Dashboard Financeiro.</h1>
             <p class="text-gray-600 text-sm sm:text-base md:text-lg px-2">Bem-Vindo ao seu Dashboard Financeiro com análise completa de suas finanças</p>
-            <div class="mt-4 flex justify-center px-2">
-                <div class="pulse-shadow bg-gray-200 bg-opacity-50 rounded-full px-4 sm:px-6 py-2">
-                    <span class="text-gray-700 text-xs sm:text-sm font-medium" id="ultimo-update">Última atualização: agora</span>
+            <div class="mt-2 sm:mt-4 flex justify-center px-2">
+                <div class="pulse-shadow bg-gray-200 bg-opacity-50 rounded-full px-3 sm:px-4 py-1 sm:py-2">
+                    <span class="text-gray-700 text-xs font-medium" id="ultimo-update">Última atualização: agora</span>
                 </div>
             </div>
         </div>
 
         <!-- Métricas Rápidas -->
-        <div class="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 md:grid-cols-4 mb-8">
+        <div class="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 md:grid-cols-4 mb-6 sm:mb-8">
             <div class="glass rounded-lg sm:rounded-2xl p-3 sm:p-4 text-center card-hover" data-aos="zoom-in" data-aos-delay="100">
                 <div class="text-xl sm:text-2xl font-bold text-gray-800" id="meta-economia">20%</div>
                 <div class="text-gray-600 text-xs sm:text-sm">Meta Economia</div>
@@ -257,7 +257,7 @@
         </div>
 
         <!-- Cards Principais -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
             <!-- Saldo Total -->
             <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="100">
             <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
@@ -336,7 +336,7 @@
         </div>
 
         <!-- Seção de Gráficos -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
             <!-- Gráfico de Pizza - Distribuição de Gastos -->
             <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-right">
                 <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
@@ -371,7 +371,7 @@
         </div>
 
         <!-- Gráficos Adicionais -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
             <!-- Gráfico de Barras - Comparação Mensal -->
             <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl card-hover" data-aos="fade-up" data-aos-delay="100">
                 <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
@@ -433,16 +433,16 @@
         </div>
 
         <!-- Botões de Ação -->
-        <div class="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 mb-8 px-2" data-aos="zoom-in">
-            <button onclick="abrirModal()" class="glass hover:bg-gray-200 hover:bg-opacity-60 text-gray-800 font-semibold px-4 sm:px-8 py-3 sm:py-4 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 pulse-shadow text-sm sm:text-base">
-                <i data-lucide="plus" class="w-5 sm:w-6 h-5 sm:h-6"></i>
+        <div class="flex flex-col sm:flex-row justify-center gap-2 sm:gap-3 mb-6 sm:mb-8 px-0 sm:px-2" data-aos="zoom-in">
+            <button onclick="abrirModal()" class="glass hover:bg-gray-200 hover:bg-opacity-60 text-gray-800 font-semibold px-3 sm:px-8 py-2 sm:py-4 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 pulse-shadow text-xs sm:text-base">
+                <i data-lucide="plus" class="w-4 sm:w-6 h-4 sm:h-6"></i>
                 Nova Transação
             </button>
-            <button onclick="exportarDados()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-4 sm:px-6 py-3 sm:py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 text-sm sm:text-base">
-                <i data-lucide="download" class="w-5 sm:w-5 h-5 sm:h-5"></i>
+            <button onclick="exportarDados()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-3 sm:px-6 py-2 sm:py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 text-xs sm:text-base">
+                <i data-lucide="download" class="w-4 sm:w-5 h-4 sm:h-5"></i>
                 Exportar
             </button>
-            <button onclick="toggleDarkMode()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-4 sm:px-6 py-3 sm:py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 text-sm sm:text-base">
+            <button onclick="toggleDarkMode()" class="glass hover:bg-gray-100 hover:bg-opacity-60 text-gray-700 font-semibold px-3 sm:px-6 py-2 sm:py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 text-xs sm:text-base">
                 <i data-lucide="moon" class="w-5 sm:w-5 h-5 sm:h-5" id="theme-icon"></i>
                 Tema
             </button>
@@ -1263,8 +1263,8 @@
 </script>
 
     <!-- Rodapé -->
-    <footer class="w-full mt-8 sm:mt-12 py-4 sm:py-6 bg-transparent text-center px-2">
-        <p class="text-xs sm:text-sm text-gray-700">MGV Group — Todos os direitos reservados, 2025</p>
+    <footer class="w-full mt-6 sm:mt-8 py-2 sm:py-4 bg-transparent text-center px-2">
+        <p class="text-xs text-gray-700">MGV Group — Todos os direitos reservados, 2025</p>
     </footer>
 </body>
 </html>
