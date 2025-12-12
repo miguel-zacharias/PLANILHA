@@ -16,6 +16,13 @@
             width: 100%;
             overflow-x: hidden;
         }
+        /* Notificações in-app: garantir topo e animação */
+        #notifications-area { pointer-events: auto; position: fixed !important; top: 1rem !important; right: 1rem !important; z-index: 2147483647 !important; }
+        .notif-card { border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.25); overflow: hidden; }
+        .notif-enter { transform: translateY(-10px) translateX(10px) scale(0.98); opacity: 0; }
+        .notif-enter-active { transform: translateY(0) translateX(0) scale(1); opacity: 1; transition: transform 400ms cubic-bezier(.2,.9,.2,1), opacity 400ms; }
+        .notif-exit { opacity: 1; }
+        .notif-exit-active { opacity: 0; transform: translateY(-8px); transition: transform 260ms ease-in, opacity 260ms ease-in; }
         
         * {
             box-sizing: border-box;
@@ -230,7 +237,9 @@
         }
     </style>
 </head>
-<body class="gradient-bg min-h-screen">
+    <body class="gradient-bg min-h-screen">
+        <!-- Notificações in-app (fora de qualquer stacking context) -->
+        <div id="notifications-area" style="position:fixed;top:1rem;right:1rem;z-index:2147483647;pointer-events:auto"></div>
     <div class="container mx-auto w-full p-4 sm:p-6 md:p-8 relative" style="max-width: 100%; overflow-x: hidden; box-sizing: border-box;">
         <!-- Controles neutros (canto superior) - Responsivo -->
         <div class="flex flex-row gap-2 sm:gap-3 z-50 mb-4 sm:mb-6 justify-center sm:justify-end flex-wrap">
@@ -353,6 +362,18 @@
                 <div class="mt-3 pt-3 border-t border-gray-300">
                     <p class="text-gray-500 text-xs" id="categoria-maior-gasto">Sem gastos</p>
                 </div>
+            </div>
+        </div>
+        <!-- Gastos Mensais (Faturas / Assinaturas / Contas) -->
+        <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl mb-6 sm:mb-8">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg sm:text-xl font-bold text-gray-800">Gastos Mensais</h3>
+                <div class="flex items-center gap-2">
+                    <button onclick="openRecorrenteModal()" class="px-3 py-2 bg-blue-500 text-white rounded-full text-sm hover:bg-blue-600 transition-colors">Adicionar</button>
+                </div>
+            </div>
+            <div id="recorrentes-list" class="space-y-3">
+                <p class="text-gray-500 text-sm">Nenhum gasto mensal cadastrado</p>
             </div>
         </div>
 
@@ -560,7 +581,46 @@
         </div>
     </div>
 
-    <script>
+        <!-- Modal Recorrente (Gasto Mensal) -->
+        <div id="recorrente-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 hidden overflow-y-auto">
+            <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl w-full shadow-2xl overflow-hidden flex flex-col my-auto" style="max-width: 28rem; max-height: 90vh;">
+                <div class="p-4 sm:p-6 border-b border-gray-200 flex-shrink-0">
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">Novo Gasto Mensal</h3>
+                </div>
+                <div class="overflow-y-auto flex-1 p-4 sm:p-6">
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nome</label>
+                            <input id="rec-name" type="text" class="w-full p-3 border border-gray-300 rounded-xl text-base" placeholder="Ex: Netflix">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Valor (R$)</label>
+                            <input id="rec-amount" type="number" step="0.01" class="w-full p-3 border border-gray-300 rounded-xl text-base" placeholder="0,00">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                            <select id="rec-category" class="w-full p-3 border border-gray-300 rounded-xl text-base">
+                                <option value="">Selecione</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Dia do mês</label>
+                            <input id="rec-day" type="number" min="1" max="28" class="w-32 p-2 border border-gray-300 rounded-xl text-base" placeholder="Dia">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input id="rec-active" type="checkbox" checked>
+                            <label class="text-sm">Ativo</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-200 p-4 sm:p-6 flex gap-3 justify-end flex-shrink-0">
+                    <button onclick="closeRecorrenteModal()" class="px-4 py-2 border rounded-xl hover:bg-gray-50">Cancelar</button>
+                    <button onclick="saveRecorrenteFromModal()" class="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600">Salvar</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
         // Inicializar ícones Lucide e AOS
         lucide.createIcons();
         AOS.init({
@@ -574,6 +634,7 @@
         let tipoSelecionado = 'income';
         let charts = {};
         let db; // Dexie DB instance
+        let recorrentes = []; // gastos mensais (faturas, assinaturas, contas)
 
         // Inicializa IndexedDB via Dexie e migra localStorage se necessário
         async function initDBandMigrate() {
@@ -586,6 +647,8 @@
             // versão 1: transacoes, versão 2: adiciona store `app` para configurações (ex.: username)
             db.version(1).stores({ transacoes: 'id,date,type,category,amount' });
             db.version(2).stores({ transacoes: 'id,date,type,category,amount', app: 'key' });
+            // versão 3: adiciona store para gastos mensais (recorrentes)
+            db.version(3).stores({ transacoes: 'id,date,type,category,amount', app: 'key', recorrentes: 'id,name,amount,category,day,active' });
             await db.open();
 
             // Se DB vazio mas houver dados em localStorage, migrar
@@ -601,6 +664,16 @@
                     console.error('Erro migrando para IndexedDB', e);
                 }
             }
+            // Se houver recorrentes em localStorage, migrar para IndexedDB na primeira abertura
+            const localRec = JSON.parse(localStorage.getItem('recorrentes') || '[]');
+            if (Array.isArray(localRec) && localRec.length > 0) {
+                try {
+                    await db.recorrentes.bulkPut(localRec);
+                    localStorage.removeItem('recorrentes');
+                } catch (e) {
+                    console.warn('Erro migrando recorrentes para IndexedDB', e);
+                }
+            }
         }
 
         async function loadTransacoesFromDB() {
@@ -611,6 +684,109 @@
             } else {
                 transacoes = JSON.parse(localStorage.getItem('transacoes') || '[]');
             }
+        }
+
+        // Recorrentes (gastos mensais) helpers
+        async function loadRecorrentesFromDB() {
+            if (db) {
+                const all = await db.recorrentes.orderBy('id').reverse().toArray();
+                recorrentes = all || [];
+            } else {
+                recorrentes = JSON.parse(localStorage.getItem('recorrentes') || '[]');
+            }
+        }
+
+        async function saveRecorrenteToDB(rec) {
+            if (db) {
+                await db.recorrentes.put(rec);
+            } else {
+                recorrentes.unshift(rec);
+                localStorage.setItem('recorrentes', JSON.stringify(recorrentes));
+            }
+        }
+
+        async function removeRecorrenteFromDB(id) {
+            if (db) {
+                await db.recorrentes.delete(id);
+            } else {
+                recorrentes = recorrentes.filter(r => r.id !== id);
+                localStorage.setItem('recorrentes', JSON.stringify(recorrentes));
+            }
+        }
+
+        function renderRecorrentes() {
+            const container = document.getElementById('recorrentes-list');
+            if (!container) return;
+            if (!recorrentes || recorrentes.length === 0) {
+                container.innerHTML = `<p class="text-gray-500 text-sm">Nenhum gasto mensal cadastrado</p>`;
+                return;
+            }
+
+            container.innerHTML = recorrentes.map(r => `
+                <div class="flex items-center justify-between bg-white bg-opacity-30 p-3 rounded-xl">
+                    <div>
+                        <p class="font-semibold">${r.name}</p>
+                        <p class="text-xs text-gray-600">${r.category} • dia ${r.day}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <p class="font-bold">R$ ${Number(r.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                        <button onclick="handleRemoveRecorrente(${r.id})" class="p-2 rounded-lg hover:bg-white hover:bg-opacity-20">
+                            <i data-lucide="trash-2" class="w-4 h-4 text-gray-700"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        function handleRemoveRecorrente(id) {
+            const ok = confirm('Remover gasto mensal?');
+            if (!ok) return;
+            removeRecorrenteFromDB(id).then(() => {
+                recorrentes = recorrentes.filter(r => r.id !== id);
+                renderRecorrentes();
+                atualizarDashboard();
+            }).catch(e => console.error(e));
+        }
+
+        function openRecorrenteModal() {
+            // popular select de categorias com lista fixa de Gastos Mensais
+            const sel = document.getElementById('rec-category');
+            sel.innerHTML = '<option value="">Selecione</option>';
+            categoriasRecorrentes.forEach(c => {
+                const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o);
+            });
+            document.getElementById('rec-name').value = '';
+            document.getElementById('rec-amount').value = '';
+            document.getElementById('rec-day').value = '';
+            document.getElementById('rec-active').checked = true;
+            document.getElementById('recorrente-modal').classList.remove('hidden');
+        }
+
+        function closeRecorrenteModal() {
+            document.getElementById('recorrente-modal').classList.add('hidden');
+        }
+
+        async function saveRecorrenteFromModal() {
+            const name = document.getElementById('rec-name').value && document.getElementById('rec-name').value.trim();
+            const amount = parseFloat(document.getElementById('rec-amount').value || 0);
+            const category = document.getElementById('rec-category').value;
+            const day = parseInt(document.getElementById('rec-day').value || '1', 10);
+            const active = document.getElementById('rec-active').checked;
+
+            if (!name || !amount || !category) {
+                alert('Preencha nome, valor e categoria');
+                return;
+            }
+
+            const rec = { id: Date.now(), name, amount: Number(amount), category, day: Math.max(1, Math.min(28, day)), active };
+            await saveRecorrenteToDB(rec);
+            // atualizar array em memória
+            recorrentes.unshift(rec);
+            renderRecorrentes();
+            atualizarDashboard();
+            closeRecorrenteModal();
         }
 
         // Usuario (nome) helpers
@@ -685,12 +861,25 @@
             income: ['Salário', 'Freelance', 'Investimentos', 'Outros'],
             expense: ['Alimentação', 'Transporte', 'Moradia', 'Lazer', 'Saúde', 'Educação', 'Compras', 'Contas', 'Outros']
         };
+        // Categorias sugeridas especificamente para Gastos Mensais (recorrentes)
+        const categoriasRecorrentes = [
+            'Conta de Água',
+            'Conta de Energia',
+            'Assinaturas',
+            'Faturas',
+            'Internet',
+            'Telefone',
+            'Aluguel',
+            'Condomínio',
+            'Seguro'
+        ];
 
         // Inicializar (agora assíncrono para suportar IndexedDB)
         document.addEventListener('DOMContentLoaded', async function() {
             document.getElementById('data').value = new Date().toISOString().split('T')[0];
             await initDBandMigrate();
             await loadTransacoesFromDB();
+            await loadRecorrentesFromDB();
             // carregar/salvar nome do usuário e exibir modal se necessário
             const savedName = await getSavedUsername();
             if (savedName) {
@@ -702,6 +891,7 @@
             }
 
             atualizarCategorias();
+            renderRecorrentes();
             atualizarDashboard();
             criarGraficos();
             atualizarUltimaAtualizacao();
@@ -747,6 +937,11 @@
             
             transacoes.filter(t => t.type === 'expense').forEach(t => {
                 categoriasDespesa[t.category] = (categoriasDespesa[t.category] || 0) + t.amount;
+            });
+
+            // Incluir gastos mensais recorrentes na distribuição de despesas
+            (recorrentes || []).filter(r => r.active).forEach(r => {
+                categoriasDespesa[r.category] = (categoriasDespesa[r.category] || 0) + Number(r.amount || 0);
             });
 
             const cores = [
@@ -1084,10 +1279,12 @@
                 if (db) {
                     try { await db.transacoes.clear(); } catch(e){ console.warn('Erro limpando transacoes do DB', e); }
                     try { await db.app.clear(); } catch(e){ /* ignore if store missing */ }
+                    try { await db.recorrentes.clear(); } catch(e){ /* ignore if store missing */ }
                 }
                 localStorage.removeItem('transacoes');
                 localStorage.removeItem('username');
                 localStorage.removeItem('transacoes_migrated');
+                localStorage.removeItem('recorrentes');
             } catch (e) {
                 console.error('Erro ao excluir dados', e);
             }
@@ -1103,12 +1300,14 @@
         function atualizarDashboard() {
             const receitas = transacoes.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
             const despesas = transacoes.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+            const despesasRecorrentes = (recorrentes || []).filter(r => r.active).reduce((s, r) => s + Number(r.amount || 0), 0);
+            const despesasTotal = despesas + despesasRecorrentes;
             const saldo = receitas - despesas;
 
             // Atualizar cards principais
             document.getElementById('saldo-total').textContent = `R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
             document.getElementById('total-receitas').textContent = `R$ ${receitas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-            document.getElementById('total-despesas').textContent = `R$ ${despesas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            document.getElementById('total-despesas').textContent = `R$ ${despesasTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
             
             // Contadores
             const qtdReceitas = transacoes.filter(t => t.type === 'income').length;
@@ -1117,11 +1316,13 @@
             document.getElementById('contador-despesas').textContent = `${qtdDespesas}`;
 
             // Taxa de economia
-            const taxaEconomia = receitas > 0 ? ((saldo / receitas) * 100).toFixed(1) : 0;
+            // considerar despesas recorrentes na taxa/projeções
+            const saldoConsiderandoRecorrentes = receitas - despesasTotal;
+            const taxaEconomia = receitas > 0 ? ((saldoConsiderandoRecorrentes / receitas) * 100).toFixed(1) : 0;
             document.getElementById('taxa-economia').textContent = `Taxa de economia: ${taxaEconomia}%`;
 
             // Percentual de despesas
-            const percentualDespesas = receitas > 0 ? ((despesas / receitas) * 100).toFixed(1) : 0;
+            const percentualDespesas = receitas > 0 ? ((despesasTotal / receitas) * 100).toFixed(1) : 0;
             document.getElementById('percentual-despesas').textContent = `${percentualDespesas}% da receita`;
 
             // Maior gasto
@@ -1154,7 +1355,9 @@
         function atualizarMetricasRapidas() {
             const receitas = transacoes.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
             const despesas = transacoes.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
-            const saldo = receitas - despesas;
+            const despesasRecorrentes = (recorrentes || []).filter(r => r.active).reduce((s, r) => s + Number(r.amount || 0), 0);
+            const despesasTotal = despesas + despesasRecorrentes;
+            const saldo = receitas - despesasTotal;
 
             // Meta de economia
             const metaEconomia = receitas > 0 ? Math.min(100, (saldo / receitas) * 100) : 0;
@@ -1181,13 +1384,14 @@
 
             // Média diária de gastos
             const diasComTransacao = new Set(transacoes.map(t => t.date)).size;
-            const mediaDiaria = diasComTransacao > 0 ? despesas / diasComTransacao : 0;
+            const mediaDiaria = diasComTransacao > 0 ? despesasTotal / diasComTransacao : 0;
             document.getElementById('media-diaria').textContent = `R$ ${mediaDiaria.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`;
 
             // Projeção do mês
             const diaAtual = new Date().getDate();
             const diasNoMes = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-            const projecaoMes = (despesas / diaAtual) * diasNoMes;
+            // projecao inclui despesas recorrentes (assumindo que ocorrem este mes)
+            const projecaoMes = ((despesasTotal) / diaAtual) * diasNoMes;
             document.getElementById('projecao-mes').textContent = `R$ ${projecaoMes.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`;
 
             // Atualizar barras de progresso das metas
@@ -1280,6 +1484,215 @@
                 fecharModal();
             }
         });
+
+        // ---------- Notificações de cobranças recorrentes ----------
+        const NOTIF_THRESHOLD_DAYS = 3; // ajustar conforme desejar
+
+        function getNextDueDateForDay(day) {
+            const hoje = new Date();
+            const ano = hoje.getFullYear();
+            let mes = hoje.getMonth(); // 0-indexed
+            const candidato = new Date(ano, mes, day);
+            if (candidato < new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate())) {
+                // já passou esse mês -> próximo mês
+                mes = mes + 1;
+            }
+            // ajustar ano se necessário
+            let anoFinal = ano;
+            if (mes > 11) { mes = 0; anoFinal = ano + 1; }
+            // limitar dia entre 1 e 28 para evitar problemas com meses curtos
+            const diaVal = Math.max(1, Math.min(28, day));
+            return new Date(anoFinal, mes, diaVal);
+        }
+
+        function diffDays(a, b) {
+            const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+            // floor difference in days
+            const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+            const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+            return Math.floor((utc1 - utc2) / _MS_PER_DAY);
+        }
+
+        function _getDismissedMap() {
+            try {
+                return JSON.parse(localStorage.getItem('dismissed_rec_notifs') || '{}');
+            } catch(e){ return {}; }
+        }
+
+        function _setDismissedMap(m) { localStorage.setItem('dismissed_rec_notifs', JSON.stringify(m)); }
+
+        function markNotificationDismissed(recId, year, month) {
+            const key = `${recId}-${year}-${month}`;
+            const m = _getDismissedMap();
+            m[key] = new Date().toISOString();
+            _setDismissedMap(m);
+        }
+
+        async function markRecorrenteAsPaid(rec, dueDate) {
+            // cria uma transação de despesa para registrar o pagamento
+            const transacao = {
+                id: Date.now(),
+                type: 'expense',
+                amount: Number(rec.amount),
+                category: rec.category || 'Contas',
+                description: `Pagamento: ${rec.name}`,
+                date: dueDate.toISOString().split('T')[0]
+            };
+            await saveTransacaoToDB(transacao);
+            transacoes.unshift(transacao);
+            // marcar dismiss para essa ocorrência
+            markNotificationDismissed(rec.id, dueDate.getFullYear(), dueDate.getMonth()+1);
+            atualizarDashboard();
+            renderRecorrentes();
+            removeNotificationsUI();
+        }
+
+        function showSystemNotification(title, body) {
+            if (!('Notification' in window)) return;
+            if (Notification.permission === 'granted') {
+                new Notification(title, { body });
+            }
+        }
+
+        function requestNotificationPermission() {
+            if (!('Notification' in window)) return;
+            if (Notification.permission === 'default') {
+                Notification.requestPermission().then(p => console.log('Notification permission:', p));
+            }
+        }
+
+        function removeNotificationsUI() {
+            const area = document.getElementById('notifications-area');
+            if (area) area.innerHTML = '';
+        }
+
+        function showInAppNotification(items) {
+            const area = document.getElementById('notifications-area');
+            if (!area) return;
+            if (!items || items.length === 0) {
+                // animação de saída rápida
+                const existing = area.querySelector('.notif-card');
+                if (existing) {
+                    existing.classList.remove('notif-enter-active');
+                    existing.classList.add('notif-exit-active');
+                    setTimeout(() => area.innerHTML = '', 300);
+                } else {
+                    area.innerHTML = '';
+                }
+                return;
+            }
+
+            // montar conteúdo interno
+            const inner = document.createElement('div');
+            inner.className = 'notif-card notif-enter';
+            inner.style.background = 'linear-gradient(180deg,#ef4444,#dc2626)';
+            inner.style.color = 'white';
+            inner.innerHTML = `
+                <div class="p-4">
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                        <div style="display:flex;align-items:center;gap:12px">
+                            <div style="width:40px;height:40px;background:rgba(255,255,255,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700">⚠️</div>
+                            <div>
+                                <div style="font-weight:700;font-size:16px">Cobranças próximas</div>
+                                <div style="font-size:12px;opacity:0.95">Vencimentos em até ${NOTIF_THRESHOLD_DAYS} dias</div>
+                            </div>
+                        </div>
+                        <div style="font-size:12px;opacity:0.95">${new Date().toLocaleDateString('pt-BR')}</div>
+                    </div>
+                    <div style="margin-top:12px;font-size:13px">
+                        ${items.map(it => `
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;background:rgba(255,255,255,0.06);padding:8px;border-radius:8px">
+                                <div>
+                                    <div style="font-weight:600">${it.name}</div>
+                                    <div style="font-size:12px;opacity:0.95">R$ ${Number(it.amount).toLocaleString('pt-BR',{minimumFractionDigits:2})} • venc. ${it.dueDateLabel}</div>
+                                </div>
+                                <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+                                    <button id="pay-btn-${it.id}-${it.dueDate.getFullYear()}-${it.dueDate.getMonth()+1}" style="padding:6px 10px;font-size:12px;border-radius:8px;border:none;background:white;color:#b91c1c;font-weight:600">Pagar</button>
+                                    <button id="dismiss-btn-${it.id}-${it.dueDate.getFullYear()}-${it.dueDate.getMonth()+1}" style="padding:6px 10px;font-size:12px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.14);color:white">Ignorar</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="margin-top:10px;display:flex;justify-content:flex-end">
+                        <button id="notif-open-rec-btn" style="padding:8px 12px;background:white;color:#dc2626;border-radius:8px;border:none;font-weight:600">Abrir gastos</button>
+                    </div>
+                </div>
+            `;
+
+            // limpar e colocar novo
+            area.innerHTML = '';
+            area.appendChild(inner);
+
+            // forçar reflow e aplicar classe ativa para animação
+            void inner.offsetWidth;
+            inner.classList.add('notif-enter-active');
+
+            // associar handlers
+            items.forEach(it => {
+                const payId = `pay-btn-${it.id}-${it.dueDate.getFullYear()}-${it.dueDate.getMonth()+1}`;
+                const dismissId = `dismiss-btn-${it.id}-${it.dueDate.getFullYear()}-${it.dueDate.getMonth()+1}`;
+                const payBtn = document.getElementById(payId);
+                const dismissBtn = document.getElementById(dismissId);
+                if (payBtn) {
+                    payBtn.addEventListener('click', async () => {
+                        // animação de saída
+                        inner.classList.remove('notif-enter-active');
+                        inner.classList.add('notif-exit-active');
+                        setTimeout(async () => {
+                            await markRecorrenteAsPaid(it, it.dueDate);
+                            await checkUpcomingRecorrentes();
+                        }, 260);
+                    });
+                }
+                if (dismissBtn) {
+                    dismissBtn.addEventListener('click', () => {
+                        markNotificationDismissed(it.id, it.dueDate.getFullYear(), it.dueDate.getMonth()+1);
+                        inner.classList.remove('notif-enter-active');
+                        inner.classList.add('notif-exit-active');
+                        setTimeout(() => checkUpcomingRecorrentes(), 260);
+                    });
+                }
+            });
+
+            const openBtn = document.getElementById('notif-open-rec-btn');
+            if (openBtn) openBtn.addEventListener('click', () => { closeRecorrenteModal(); openRecorrenteModal(); });
+        }
+
+        async function checkUpcomingRecorrentes() {
+            if (!recorrentes || recorrentes.length === 0) return removeNotificationsUI();
+            const hoje = new Date();
+            const m = _getDismissedMap();
+            const próximos = [];
+            for (const r of recorrentes.filter(r=>r.active)) {
+                const due = getNextDueDateForDay(r.day || 1);
+                const daysUntil = diffDays(due, hoje);
+                const key = `${r.id}-${due.getFullYear()}-${due.getMonth()+1}`;
+                if (daysUntil >= 0 && daysUntil <= NOTIF_THRESHOLD_DAYS && !m[key]) {
+                    próximos.push({ ...r, dueDate: due, daysUntil, dueDateLabel: due.toLocaleDateString('pt-BR') });
+                }
+            }
+            if (próximos.length > 0) {
+                // notificação in-app
+                showInAppNotification(próximos);
+                // notificação do sistema (concisa)
+                try {
+                    requestNotificationPermission();
+                    primeiros = próximos.slice(0,3).map(p => `${p.name} R$ ${Number(p.amount).toLocaleString('pt-BR',{minimumFractionDigits:2})}`).join(' • ');
+                    showSystemNotification('Cobranças próximas', primeiros);
+                } catch(e){console.warn(e)}
+            } else {
+                removeNotificationsUI();
+            }
+        }
+
+        // rodar checagem após carregar recorrentes e a cada hora
+        (function scheduleRecorrentesChecks(){
+            try { requestNotificationPermission(); } catch(e){}
+            // checar logo após iniciar (algumas vezes recorrentes já carregadas)
+            setTimeout(checkUpcomingRecorrentes, 1000);
+            // checar sempre que houver mudanças relevantes (atualizar também ao salvar/remover)
+            setInterval(checkUpcomingRecorrentes, 1000 * 60 * 60); // cada 1h
+        })();
     </script>
 </script>
 
