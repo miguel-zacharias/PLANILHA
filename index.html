@@ -543,12 +543,20 @@
             document.getElementById('ultimo-update').textContent = `Última atualização: ${formato}`;
         }
 
-        // Atualiza o título com saudação
+        // Atualiza o título com saudação completa dependendo do horário
         function setGreeting(name) {
             const h1 = document.querySelector('h1');
-            if (h1) {
-                h1.textContent = `Olá, ${name}`;
+            if (!h1) return;
+            const hora = new Date().getHours();
+            let saudacao = 'Olá';
+            if (hora >= 5 && hora < 12) {
+                saudacao = 'Bom dia';
+            } else if (hora >= 12 && hora < 18) {
+                saudacao = 'Boa tarde';
+            } else {
+                saudacao = 'Boa noite';
             }
+            h1.textContent = `${saudacao}, ${name}, Bem vindo ao seu controle financeiro.`;
         }
 
         function criarGraficos() {
