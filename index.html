@@ -71,6 +71,10 @@
         <div class="text-center mb-8" data-aos="fade-down">
             <h1 class="text-5xl md:text-6xl font-bold text-gray-800 mb-3 floating">Bem-Vindo ao seu Dashboard Financeiro.</h1>
             <p class="text-gray-600 text-lg">Bem-Vindo ao seu Dashboard Financeiro com análise completa de suas finanças</p>
+            <div class="mt-4 flex justify-center gap-3">
+                <button onclick="renameUsername()" class="px-4 py-2 bg-yellow-400 text-black rounded-lg hover:brightness-95">Renomear</button>
+                <button onclick="deleteAllData()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:brightness-95">Excluir dados</button>
+            </div>
             <div class="mt-4 flex justify-center">
                 <div class="pulse-shadow bg-gray-200 bg-opacity-50 rounded-full px-6 py-2">
                     <span class="text-gray-700 text-sm font-medium" id="ultimo-update">Última atualização: agora</span>
@@ -891,6 +895,35 @@
             await saveUsername(name);
             setGreeting(name);
             hideNameModal();
+        }
+
+        // Abre o modal de nome já preenchido para renomear
+        async function renameUsername() {
+            const current = await getSavedUsername();
+            const input = document.getElementById('username-input');
+            if (input) input.value = current || '';
+            showNameModal();
+            if (input) input.focus();
+        }
+
+        // Exclui todas as transações e o nome salvo (IndexedDB + localStorage)
+        async function deleteAllData() {
+            const ok = confirm('Confirma excluir TODOS os dados (transações e nome)? Esta ação não pode ser desfeita.');
+            if (!ok) return;
+            try {
+                if (db) {
+                    try { await db.transacoes.clear(); } catch(e){ console.warn('Erro limpando transacoes do DB', e); }
+                    try { await db.app.clear(); } catch(e){ /* ignore if store missing */ }
+                }
+                localStorage.removeItem('transacoes');
+                localStorage.removeItem('username');
+                localStorage.removeItem('transacoes_migrated');
+            } catch (e) {
+                console.error('Erro ao excluir dados', e);
+            }
+            transacoes = [];
+            atualizarDashboard();
+            alert('Dados excluídos com sucesso.');
         }
 
         function skipName() {
