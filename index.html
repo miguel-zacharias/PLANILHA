@@ -23,6 +23,8 @@
         .notif-enter-active { transform: translateY(0) translateX(0) scale(1); opacity: 1; transition: transform 400ms cubic-bezier(.2,.9,.2,1), opacity 400ms; }
         .notif-exit { opacity: 1; }
         .notif-exit-active { opacity: 0; transform: translateY(-8px); transition: transform 260ms ease-in, opacity 260ms ease-in; }
+
+        
         
         * {
             box-sizing: border-box;
@@ -369,7 +371,10 @@
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-lg sm:text-xl font-bold text-gray-800">Gastos Mensais</h3>
                 <div class="flex items-center gap-2">
-                    <button onclick="openRecorrenteModal()" class="px-3 py-2 bg-blue-500 text-white rounded-full text-sm hover:bg-blue-600 transition-colors">Adicionar</button>
+                    <button onclick="openRecorrenteModal()" class="glass hover:bg-gray-200 hover:bg-opacity-60 text-gray-800 font-semibold px-3 sm:px-6 py-2 sm:py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 text-xs sm:text-base">
+                        <i data-lucide="plus" class="w-4 sm:w-5 h-4 sm:h-5"></i>
+                        Adicionar
+                    </button>
                 </div>
             </div>
             <div id="recorrentes-list" class="space-y-3">
@@ -896,6 +901,8 @@
             criarGraficos();
             atualizarUltimaAtualizacao();
             setInterval(atualizarUltimaAtualizacao, 60000); // Atualizar a cada minuto
+            // recriar ícones para novos elementos (botão adicionar)
+            try { lucide.createIcons(); } catch(e){}
         });
 
         function atualizarUltimaAtualizacao() {
