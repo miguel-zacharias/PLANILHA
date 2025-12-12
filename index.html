@@ -31,9 +31,16 @@
         }
         
         .gradient-bg {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%) !important;
             min-height: 100vh;
+            transition: background 0.3s ease;
         }
+        
+        /* Tema Escuro */
+        body.dark-mode.gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%) !important;
+        }
+        
         /* Cor padrão do texto (permite que classes de utilitário sobrescrevam cores específicas) */
         body {
             color: #000000;
@@ -41,12 +48,24 @@
             padding: 0;
             overflow-x: hidden;
             width: 100%;
+            transition: color 0.3s ease;
+        }
+        
+        body.dark-mode {
+            color: #e2e8f0;
         }
         .glass {
             background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        body.dark-mode .glass {
+            background: rgba(30, 41, 59, 0.45);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
         .pulse-shadow {
             animation: pulseShadow 2s infinite;
@@ -250,7 +269,14 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
+        
+        body.dark-mode .export-menu {
+            background: #1e293b;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+        }
+        
         .export-option {
             display: flex;
             align-items: center;
@@ -258,10 +284,121 @@
             padding: 8px 10px;
             border-radius: 10px;
             cursor: pointer;
-            transition: background 160ms, transform 120ms;
+            transition: background 160ms, transform 120ms, color 160ms;
             user-select: none;
         }
-        .export-option:hover { transform: translateY(-2px); }
+        
+        body.dark-mode .export-option {
+            color: #e2e8f0;
+        }
+        
+        .export-option:hover { 
+            transform: translateY(-2px);
+        }
+        
+        body.dark-mode .export-option:hover {
+            background-color: rgba(148, 163, 184, 0.2);
+        }
+        
+        /* Textos no modo escuro */
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode h4,
+        body.dark-mode h5,
+        body.dark-mode h6 {
+            color: #f1f5f9;
+        }
+        
+        body.dark-mode p,
+        body.dark-mode span,
+        body.dark-mode label {
+            color: #cbd5e1;
+        }
+        
+        /* Inputs e selects em dark mode */
+        body.dark-mode input[type="text"],
+        body.dark-mode input[type="number"],
+        body.dark-mode input[type="date"],
+        body.dark-mode input[type="password"],
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background-color: #334155;
+            color: #e2e8f0;
+            border-color: #475569;
+        }
+        
+        body.dark-mode input[type="text"]::placeholder,
+        body.dark-mode input[type="number"]::placeholder,
+        body.dark-mode textarea::placeholder {
+            color: #94a3b8;
+        }
+        
+        /* Botões em dark mode */
+        body.dark-mode button {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        /* Modais em dark mode */
+        body.dark-mode #modal,
+        body.dark-mode #name-modal,
+        body.dark-mode #recorrente-modal {
+            background-color: rgba(15, 23, 42, 0.9);
+        }
+        
+        /* Border em dark mode */
+        body.dark-mode .border-gray-300,
+        body.dark-mode input[type="text"],
+        body.dark-mode input[type="number"],
+        body.dark-mode input[type="date"],
+        body.dark-mode select {
+            border-color: #475569;
+        }
+        
+        /* Cards/Glass em tabelas */
+        body.dark-mode .bg-white {
+            background-color: #1e293b;
+            color: #e2e8f0;
+        }
+        
+        /* Textos específicos */
+        body.dark-mode .text-gray-600 {
+            color: #cbd5e1;
+        }
+        
+        body.dark-mode .text-gray-500 {
+            color: #94a3b8;
+        }
+        
+        body.dark-mode .text-gray-700 {
+            color: #e2e8f0;
+        }
+        
+        body.dark-mode .text-gray-800 {
+            color: #f1f5f9;
+        }
+        
+        /* Backgrounds alterados */
+        body.dark-mode .bg-gray-100,
+        body.dark-mode .bg-gray-200,
+        body.dark-mode .bg-gray-50 {
+            background-color: #334155;
+            color: #e2e8f0;
+        }
+        
+        body.dark-mode .bg-green-50 {
+            background-color: #0c3a20;
+        }
+        
+        body.dark-mode .bg-red-50 {
+            background-color: #3a0c0c;
+        }
+        
+        /* Borders no dark mode */
+        body.dark-mode .border-gray-200,
+        body.dark-mode .border-gray-300 {
+            border-color: #475569;
+        }
         .export-option .dot { width:12px;height:12px;border-radius:3px;flex-shrink:0 }
         .export-csv:hover { background: rgba(59,130,246,0.06); }
         .export-csv .dot { background: #3b82f6 }
@@ -914,6 +1051,9 @@
 
         // Inicializar (agora assíncrono para suportar IndexedDB)
         document.addEventListener('DOMContentLoaded', async function() {
+            // Carregar preferência de tema
+            loadDarkModePreference();
+            
             document.getElementById('data').value = new Date().toISOString().split('T')[0];
             await initDBandMigrate();
             await loadTransacoesFromDB();
@@ -1507,8 +1647,28 @@
         }
 
         function toggleDarkMode() {
-            // Implementação do modo escuro - placeholder
-            console.log('Modo escuro - funcionalidade futura');
+            const body = document.body;
+            const isDarkMode = body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode ? 'true' : 'false');
+            
+            // Atualizar ícone do botão tema
+            const themeIcon = document.getElementById('theme-icon');
+            if (themeIcon) {
+                themeIcon.setAttribute('data-lucide', isDarkMode ? 'sun' : 'moon');
+                lucide.createIcons();
+            }
+        }
+        
+        // Carregar preferência de tema ao inicializar
+        function loadDarkModePreference() {
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                const themeIcon = document.getElementById('theme-icon');
+                if (themeIcon) {
+                    themeIcon.setAttribute('data-lucide', 'sun');
+                }
+            }
         }
 
         function toggleChartView(tipo) {
