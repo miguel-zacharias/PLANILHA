@@ -366,22 +366,7 @@
                 </div>
             </div>
         </div>
-        <!-- Gastos Mensais (Faturas / Assinaturas / Contas) -->
-        <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl mb-6 sm:mb-8">
-            <div class="flex items-center justify-between mb-3">
-                <h3 class="text-lg sm:text-xl font-bold text-gray-800">Gastos Mensais</h3>
-                <div class="flex items-center gap-2">
-                    <button onclick="openRecorrenteModal()" class="glass hover:bg-gray-200 hover:bg-opacity-60 text-gray-800 font-semibold px-3 sm:px-6 py-2 sm:py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 text-xs sm:text-base">
-                        <i data-lucide="plus" class="w-4 sm:w-5 h-4 sm:h-5"></i>
-                        Adicionar
-                    </button>
-                </div>
-            </div>
-            <div id="recorrentes-list" class="space-y-3">
-                <p class="text-gray-500 text-sm">Nenhum gasto mensal cadastrado</p>
-            </div>
-        </div>
-
+        
         <!-- Seção de Gráficos -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
             <!-- Gráfico de Pizza - Distribuição de Gastos -->
@@ -476,6 +461,22 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Gastos Mensais (movido para cima da área de nova transação) -->
+        <div class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl mb-6 sm:mb-8">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg sm:text-xl font-bold text-gray-800">Gastos Mensais</h3>
+                <div class="flex items-center gap-2">
+                    <button onclick="openRecorrenteModal()" class="glass hover:bg-gray-200 hover:bg-opacity-60 text-gray-800 font-semibold px-3 sm:px-6 py-2 sm:py-4 rounded-full shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 hover:scale-105 text-xs sm:text-base">
+                        <i data-lucide="plus" class="w-4 sm:w-5 h-4 sm:h-5"></i>
+                        Adicionar
+                    </button>
+                </div>
+            </div>
+            <div id="recorrentes-list" class="space-y-3">
+                <p class="text-gray-500 text-sm">Nenhum gasto mensal cadastrado</p>
             </div>
         </div>
 
