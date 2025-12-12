@@ -13,11 +13,13 @@
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <style>
         html {
-            width: 100%;
-            overflow-x: hidden;
+              width: 100vw;
+            margin: 0;
+            padding: 0;
+              overflow-x: hidden;
         }
         /* Notificações in-app: garantir topo e animação */
-        #notifications-area { pointer-events: auto; position: fixed !important; top: 1rem !important; right: 1rem !important; z-index: 2147483647 !important; }
+        #notifications-area { pointer-events: auto; position: fixed !important; top: 1rem !important; right: 1rem !important; z-index: 2147483647 !important; max-width: calc(100vw - 2rem); }
         .notif-card { border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.25); overflow: hidden; }
         .notif-enter { transform: translateY(-10px) translateX(10px) scale(0.98); opacity: 0; }
         .notif-enter-active { transform: translateY(0) translateX(0) scale(1); opacity: 1; transition: transform 400ms cubic-bezier(.2,.9,.2,1), opacity 400ms; }
@@ -32,8 +34,12 @@
         
         .gradient-bg {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%) !important;
+              overflow-x: hidden;
             min-height: 100vh;
             transition: background 0.3s ease;
+            width: 100%;
+            margin: 0;
+            padding: 0;
         }
         
         /* Tema Escuro */
@@ -46,7 +52,6 @@
             color: #000000;
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
             width: 100%;
             transition: color 0.3s ease;
         }
@@ -98,6 +103,167 @@
             fill: none;
             stroke-width: 2;
             vector-effect: non-scaling-stroke;
+            transition: stroke 0.3s ease;
+        }
+        
+        body.dark-mode .sparkline {
+            stroke: #60a5fa !important;
+        }
+        
+        /* SVGs em dark mode */
+        body.dark-mode circle[stroke="rgba(255,255,255,0.3)"] {
+            stroke: rgba(148, 163, 184, 0.3) !important;
+        }
+        
+        /* Progress ring circles */
+        body.dark-mode .progress-ring-circle {
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+        }
+        
+        /* Metas Financeiras em dark mode */
+        body.dark-mode .flex.justify-between.text-gray-700 {
+            color: #e2e8f0;
+        }
+        
+        body.dark-mode .bg-gray-300 {
+            background-color: #475569;
+        }
+        
+        /* Tooltips e backgrounds em gráficos */
+        body.dark-mode .chartjs-tooltip {
+            background: #1e293b !important;
+            color: #e2e8f0 !important;
+        }
+        
+        body.dark-mode .tooltip {
+            background-color: #1e293b !important;
+            color: #e2e8f0 !important;
+        }
+        
+        /* Pulse shadow em dark mode */
+        body.dark-mode .pulse-shadow {
+            background-color: rgba(51, 65, 85, 0.8) !important;
+            color: #e2e8f0 !important;
+        }
+        
+        body.dark-mode .bg-gray-200 {
+            background-color: #334155;
+            color: #e2e8f0;
+        }
+        
+        body.dark-mode .bg-gray-100,
+        body.dark-mode .bg-gray-50 {
+            background-color: #334155;
+            color: #e2e8f0;
+        }
+        
+        /* Hover states em dark mode */
+        body.dark-mode button:hover.hover\:bg-gray-100,
+        body.dark-mode button:hover.hover\:bg-gray-50 {
+            background-color: #475569;
+        }
+        
+        /* Modais em dark mode - fundo e texto */
+        body.dark-mode #modal .glass,
+        body.dark-mode #name-modal .glass,
+        body.dark-mode #recorrente-modal .glass {
+            background-color: rgba(30, 41, 59, 0.95) !important;
+            color: #e2e8f0;
+        }
+        
+        body.dark-mode #modal,
+        body.dark-mode #name-modal,
+        body.dark-mode #recorrente-modal {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        
+        body.dark-mode .border-b.border-gray-200 {
+            border-color: #475569;
+        }
+        
+        body.dark-mode #modal input,
+        body.dark-mode #modal select,
+        body.dark-mode #name-modal input,
+        body.dark-mode #recorrente-modal input,
+        body.dark-mode #recorrente-modal select {
+            background-color: #334155;
+            color: #e2e8f0;
+            border-color: #475569;
+        }
+        
+        body.dark-mode label {
+            color: #e2e8f0;
+        }
+        
+        /* Scroll em dark mode */
+        body.dark-mode ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        /* Modais em light mode - fundo branco claro */
+        #modal .glass,
+        #name-modal .glass,
+        #recorrente-modal .glass {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            color: #1f2937;
+        }
+        
+        #modal,
+        #name-modal,
+        #recorrente-modal {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .border-b.border-gray-200 {
+            border-color: #e5e7eb;
+        }
+        
+        #modal input,
+        #modal select,
+        #name-modal input,
+        #recorrente-modal input,
+        #recorrente-modal select {
+            background-color: #ffffff;
+            color: #1f2937;
+            border-color: #d1d5db;
+        }
+        
+        label {
+            color: #374151;
+        }
+        
+        /* Scroll em light mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f3f4f6;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
         }
         .card-hover {
             transition: all 0.3s ease;
@@ -111,6 +277,7 @@
         @media (max-width: 768px) {
             .container {
                 padding: 1rem !important;
+                width: 100%;
             }
             
             h1 {
@@ -140,7 +307,6 @@
             .container {
                 padding: 1rem !important;
                 width: 100% !important;
-                overflow-x: hidden !important;
             }
             
             h1 {
@@ -189,7 +355,6 @@
             .container {
                 padding: 1rem !important;
                 width: 100% !important;
-                overflow-x: hidden !important;
             }
             
             h1 {
@@ -261,6 +426,7 @@
         .export-menu {
             position: absolute;
             min-width: 160px;
+            max-width: calc(100vw - 2rem);
             border-radius: 12px;
             padding: 8px;
             box-shadow: 0 12px 30px rgba(0,0,0,0.12);
@@ -270,6 +436,9 @@
             flex-direction: column;
             gap: 6px;
             transition: background 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         
         body.dark-mode .export-menu {
@@ -411,7 +580,7 @@
     <body class="gradient-bg min-h-screen">
         <!-- Notificações in-app (fora de qualquer stacking context) -->
         <div id="notifications-area" style="position:fixed;top:1rem;right:1rem;z-index:2147483647;pointer-events:auto"></div>
-    <div class="container mx-auto w-full p-4 sm:p-6 md:p-8 relative" style="max-width: 100%; overflow-x: hidden; box-sizing: border-box;">
+    <div class="w-full p-4 sm:p-6 md:p-8 relative" style="max-width: 100%; box-sizing: border-box; margin: 0 auto;">
         <!-- Controles neutros (canto superior) - Responsivo -->
         <div class="flex flex-row gap-2 sm:gap-3 z-50 mb-4 sm:mb-6 justify-center sm:justify-end flex-wrap">
             <button onclick="renameUsername()" class="px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">Renomear</button>
@@ -679,7 +848,7 @@
 
     <!-- Modal -->
     <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 hidden overflow-y-auto">
-        <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl w-full shadow-2xl overflow-hidden flex flex-col my-auto" style="max-width: 28rem; max-height: 90vh;">
+        <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl w-full shadow-2xl overflow-hidden flex flex-col my-auto" style="max-width: min(28rem, calc(100% - 1.5rem)); max-height: 90vh;">
             <div class="flex justify-between items-start sm:items-center p-4 sm:p-6 border-b border-gray-200 flex-shrink-0">
                 <h3 class="text-lg sm:text-2xl font-bold text-gray-800 flex-1 pr-2">Nova Transação</h3>
                 <button onclick="fecharModal()" class="p-2 hover:bg-gray-200 hover:bg-opacity-50 rounded-full transition-colors flex-shrink-0">
@@ -740,7 +909,7 @@
 
     <!-- Modal Nome do Usuário -->
     <div id="name-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 hidden overflow-y-auto">
-        <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl w-full shadow-2xl overflow-hidden flex flex-col my-auto" style="max-width: 28rem; max-height: 90vh;">
+        <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl w-full shadow-2xl overflow-hidden flex flex-col my-auto" style="max-width: min(28rem, calc(100% - 1.5rem)); max-height: 90vh;">
             <div class="p-4 sm:p-6 border-b border-gray-200 flex-shrink-0">
                 <h3 class="text-lg sm:text-xl font-bold text-gray-800">Como prefere ser chamado?</h3>
             </div>
@@ -758,7 +927,7 @@
 
         <!-- Modal Recorrente (Gasto Mensal) -->
         <div id="recorrente-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 hidden overflow-y-auto">
-            <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl w-full shadow-2xl overflow-hidden flex flex-col my-auto" style="max-width: 28rem; max-height: 90vh;">
+            <div class="glass bg-white bg-opacity-95 rounded-2xl sm:rounded-3xl w-full shadow-2xl overflow-hidden flex flex-col my-auto" style="max-width: min(28rem, calc(100% - 1.5rem)); max-height: 90vh;">
                 <div class="p-4 sm:p-6 border-b border-gray-200 flex-shrink-0">
                     <h3 class="text-lg sm:text-xl font-bold text-gray-800">Novo Gasto Mensal</h3>
                 </div>
@@ -1007,29 +1176,37 @@
             }
         }
 
-        // Configurações dos gráficos
-        const chartConfig = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: 'rgba(75, 85, 99, 0.8)',
-                        font: { family: 'system-ui' }
+        // Configurações dos gráficos - cores dinâmicas baseadas no tema
+        function getChartConfig() {
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            const textColor = isDarkMode ? '#cbd5e1' : 'rgba(75, 85, 99, 0.8)';
+            const gridColor = isDarkMode ? 'rgba(148, 163, 184, 0.1)' : 'rgba(75, 85, 99, 0.1)';
+            
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: textColor,
+                            font: { family: 'system-ui' }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        grid: { color: gridColor },
+                        ticks: { color: textColor }
+                    },
+                    x: {
+                        grid: { color: gridColor },
+                        ticks: { color: textColor }
                     }
                 }
-            },
-            scales: {
-                y: {
-                    grid: { color: 'rgba(75, 85, 99, 0.1)' },
-                    ticks: { color: 'rgba(75, 85, 99, 0.8)' }
-                },
-                x: {
-                    grid: { color: 'rgba(75, 85, 99, 0.1)' },
-                    ticks: { color: 'rgba(75, 85, 99, 0.8)' }
-                }
-            }
-        };
+            };
+        }
+        
+        const chartConfig = getChartConfig();
 
         // Categorias
         const categorias = {
@@ -1131,6 +1308,7 @@
 
             if (charts.pie) charts.pie.destroy();
             
+            const config = getChartConfig();
             charts.pie = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -1143,12 +1321,12 @@
                     }]
                 },
                 options: {
-                    ...chartConfig,
+                    ...config,
                     plugins: {
                         legend: {
                             position: 'bottom',
                             labels: {
-                                color: 'rgba(75, 85, 99, 0.8)',
+                                color: config.plugins.legend.labels.color,
                                 padding: 20,
                                 font: { size: 12 }
                             }
@@ -1209,7 +1387,7 @@
                         }
                     ]
                 },
-                options: chartConfig
+                options: getChartConfig()
             });
         }
 
@@ -1257,7 +1435,7 @@
                         }
                     ]
                 },
-                options: chartConfig
+                options: getChartConfig()
             });
         }
 
@@ -1272,6 +1450,10 @@
             });
 
             if (charts.radar) charts.radar.destroy();
+            
+            const config = getChartConfig();
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            const labelColor = isDarkMode ? '#cbd5e1' : 'rgba(75, 85, 99, 0.8)';
             
             charts.radar = new Chart(ctx, {
                 type: 'radar',
@@ -1291,14 +1473,15 @@
                     plugins: {
                         legend: {
                             labels: {
-                                color: 'rgba(75, 85, 99, 0.8)'
+                                color: config.plugins.legend.labels.color
                             }
                         }
                     },
                     scales: {
                         r: {
-                            grid: { color: 'rgba(75, 85, 99, 0.1)' },
-                            ticks: { color: 'rgba(75, 85, 99, 0.8)' }
+                            grid: { color: config.scales.x.grid.color },
+                            ticks: { color: labelColor },
+                            pointLabels: { color: labelColor, font: { size: 11, weight: 'bold' } }
                         }
                     }
                 }
@@ -1657,6 +1840,11 @@
                 themeIcon.setAttribute('data-lucide', isDarkMode ? 'sun' : 'moon');
                 lucide.createIcons();
             }
+            
+            // Recriar gráficos com cores atualizadas
+            setTimeout(() => {
+                criarGraficos();
+            }, 100);
         }
         
         // Carregar preferência de tema ao inicializar
