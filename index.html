@@ -543,7 +543,7 @@
             document.getElementById('ultimo-update').textContent = `Última atualização: ${formato}`;
         }
 
-        // Atualiza o título com saudação completa dependendo do horário
+        // Atualiza o título com saudação curta dependendo do horário
         function setGreeting(name) {
             const h1 = document.querySelector('h1');
             if (!h1) return;
@@ -556,7 +556,8 @@
             } else {
                 saudacao = 'Boa noite';
             }
-            h1.textContent = `${saudacao}, ${name}, Bem vindo ao seu controle financeiro.`;
+            // Saudação curta na linha principal, subtítulo permanece abaixo
+            h1.textContent = `${saudacao}, ${name}.`;
         }
 
         function criarGraficos() {
