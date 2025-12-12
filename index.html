@@ -370,6 +370,22 @@
         </div>
     </div>
 
+    <!-- Modal Nome do Usuário -->
+    <div id="name-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="glass bg-white bg-opacity-95 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+            <div class="mb-4">
+                <h3 class="text-xl font-bold text-gray-800">Como prefere ser chamado?</h3>
+            </div>
+            <div class="space-y-4">
+                <input id="username-input" type="text" class="w-full p-3 border border-gray-300 rounded-xl" placeholder="Seu nome">
+                <div class="flex gap-3 justify-end">
+                    <button onclick="skipName()" class="px-4 py-2 border rounded-xl">Pular</button>
+                    <button onclick="saveNameFromModal()" class="px-4 py-2 bg-blue-500 text-white rounded-xl">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Inicializar ícones Lucide e AOS
         lucide.createIcons();
@@ -501,6 +517,16 @@
             document.getElementById('data').value = new Date().toISOString().split('T')[0];
             await initDBandMigrate();
             await loadTransacoesFromDB();
+            // carregar/salvar nome do usuário e exibir modal se necessário
+            const savedName = await getSavedUsername();
+            if (savedName) {
+                // atualizar saudação
+                setGreeting(savedName);
+            } else {
+                // abrir modal de nome
+                showNameModal();
+            }
+
             atualizarCategorias();
             atualizarDashboard();
             criarGraficos();
@@ -515,6 +541,14 @@
                 minute: '2-digit' 
             });
             document.getElementById('ultimo-update').textContent = `Última atualização: ${formato}`;
+        }
+
+        // Atualiza o título com saudação
+        function setGreeting(name) {
+            const h1 = document.querySelector('h1');
+            if (h1) {
+                h1.textContent = `Olá, ${name}`;
+            }
         }
 
         function criarGraficos() {
@@ -824,6 +858,34 @@
             document.getElementById('descricao').value = '';
             document.getElementById('data').value = new Date().toISOString().split('T')[0];
             selecionarTipo('income');
+        }
+
+        // Name modal handlers
+        function showNameModal() {
+            document.getElementById('name-modal').classList.remove('hidden');
+            const input = document.getElementById('username-input');
+            if (input) input.focus();
+        }
+
+        function hideNameModal() {
+            document.getElementById('name-modal').classList.add('hidden');
+        }
+
+        async function saveNameFromModal() {
+            const input = document.getElementById('username-input');
+            if (!input) return;
+            const name = input.value && input.value.trim();
+            if (!name) {
+                alert('Digite um nome válido');
+                return;
+            }
+            await saveUsername(name);
+            setGreeting(name);
+            hideNameModal();
+        }
+
+        function skipName() {
+            hideNameModal();
         }
 
         function atualizarDashboard() {
